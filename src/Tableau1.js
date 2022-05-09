@@ -148,14 +148,14 @@ class Tableau1 extends Phaser.Scene {
         this.projectiles = this.add.group();
 
         this.time.addEvent({delay: 500, callback: this.tir, callbackScope: this, loop: true});
-        this.physics.add.overlap(this.persoC, this.HauteHerbe, function () {
-            if(me.hide === false){
-                cam.zoomTo(0.9, 1000);
-            }
-            else{
-                cam.zoomTo(1,1000);
-            }
 
+        this.physics.add.overlap(this.persoC, this.HauteHerbe, function () {
+            if(me.hide === true){
+                cam.zoomTo(0.9, 500);
+            }
+            else {
+                cam.zoomTo(1, 1000);
+            }
 
 
         })
@@ -222,21 +222,20 @@ class Tableau1 extends Phaser.Scene {
     }
 
 
-    IaGesttion() {
+    IaGesttion(monstre) {
         this.gauche = false;
-        this.stop = this.ai.x;
-        if (this.hide === false) {
-            this.dist = Phaser.Math.Distance.BetweenPoints(this.perso, this.ai);
-
+        this.stop = monstre.x;
+        if (!this.hide) {
+            this.dist = Phaser.Math.Distance.BetweenPoints(this.perso, monstre);
 
             if (this.dist <= 300) {
                 this.time.addEvent({delay: 1000});
                 this.spot = false;
-                if (this.perso.x <= this.ai.x) {
-                    this.ai.setVelocityX(-200)
+                if (this.perso.x <= monstre.x) {
+                    monstre.setVelocityX(-200)
                     this.gauche = true;
-                } else if (this.perso.x >= this.ai.x) {
-                    this.ai.setVelocityX(200)
+                } else if (this.perso.x >= monstre.x) {
+                    monstre.setVelocityX(200)
 
 
                 }
@@ -248,18 +247,18 @@ class Tableau1 extends Phaser.Scene {
                     this.attackAi()
                 }
             } else {
-                if (this.ai.x === this.spawn1X) {
-                    console.log(this.ai.x)
+                if (monstre.x === this.spawn1X) {
+                    console.log(monstre.x)
                     console.log(this.spawn1X)
                     this.spot = true;
                     console.log(this.spot);
-                    if (this.ai.x >= this.spawn1X - 10 && this.spot === true) {
-                        this.physics.moveTo(this.ai, this.spawn1X + 20, this.spawn1Y, 50);
-                    } else if (this.ai.x <= this.spawn1X + 10 && this.spot === true) {
-                        this.physics.moveTo(this.ai, this.spawn1X - 20, this.spawn1Y, 50);
+                    if (monstre.x >= this.spawn1X - 10 && this.spot === true) {
+                        this.physics.moveTo(monstre, this.spawn1X + 20, this.spawn1Y, 50);
+                    } else if (monstre.x <= this.spawn1X + 10 && this.spot === true) {
+                        this.physics.moveTo(monstre, this.spawn1X - 20, this.spawn1Y, 50);
                     } else {
                         if (this.spot === false) {
-                            this.physics.moveTo(this.ai, this.spawn1X + 10, this.spawn1Y, 50);
+                            this.physics.moveTo(monstre, this.spawn1X + 10, this.spawn1Y, 50);
 
                         }
 
@@ -268,15 +267,22 @@ class Tableau1 extends Phaser.Scene {
 
                 } else {
                     if (this.spot === false) {
-                        this.physics.moveTo(this.ai, this.spawn1X, this.spawn1Y, 200);
+                        console.log(this.spot)
+                        console.log(monstre.x)
+                        console.log(this.spawn1X)
+                        this.physics.moveTo(monstre, this.spawn1X, this.spawn1Y, 200);
+                        if(monstre.x === this.spawn1X){
+                            this.spot = true;
+                        }
 
-                    } else if (this.ai.x >= this.spawn1X + 50) {
-                        this.physics.moveTo(this.ai, this.spawn1X - 20, this.spawn1Y, 50);
+
+                    } else if (monstre.x >= this.spawn1X + 50) {
+                        this.physics.moveTo(monstre, this.spawn1X - 20, this.spawn1Y, 50);
                         this.spot = true
 
-                    } else if (this.ai.x <= this.spawn1X - 50) {
+                    } else if (monstre.x <= this.spawn1X - 50) {
                         console.log("zeub")
-                        this.physics.moveTo(this.ai, this.spawn1X + 20, this.spawn1Y, 50);
+                        this.physics.moveTo(monstre, this.spawn1X + 20, this.spawn1Y, 50);
                         this.spot = true
                     }
 
@@ -284,10 +290,10 @@ class Tableau1 extends Phaser.Scene {
 
             }
         } else {
-            if (this.ai.x === this.spawn1X) {
+            if (monstre.x === this.spawn1X) {
                 console.log("test")
             } else {
-                this.physics.moveTo(this.ai, this.spawn1X, this.spawn1Y, 200);
+                this.physics.moveTo(monstre, this.spawn1X, this.spawn1Y, 200);
             }
 
         }
@@ -359,8 +365,6 @@ class Tableau1 extends Phaser.Scene {
     }
 
     update() {
-
-
         if (this.shiftDown && this.rightDown) {
             if (this.flag) {
 
@@ -383,6 +387,7 @@ class Tableau1 extends Phaser.Scene {
             console.log(this.speed.speedDash);
         }
 
+
         if (!this.shiftDown) {
             if (this.flag) {
                 this.flag = false;
@@ -396,37 +401,25 @@ class Tableau1 extends Phaser.Scene {
         }
 
 
-
         /////////////////////////////////////////////////////////////////
-        for(var i = 0; i < this.projectiles.getChildren().length; i++){
+        for (var i = 0; i < this.projectiles.getChildren().length; i++) {
             var tir = this.projectiles.getChildren()[i];
             tir.update();
         }
 
 
-
-             this.IaGesttion();
-
+        this.IaGesttion(this.ai);
 
 
-            this.rouch();
-        if (this.crouch ===true){
+
+        this.rouch();
+        if (this.crouch === true) {
             this.test()
-        }
-        else{
+        } else {
 
         }
 
-
-
-
-
-
-        if(this.perso.hp <= 0){
-            this.perso.disableBody()
-        }
     }
-
     initKeyboard() {
         let me = this;
 
