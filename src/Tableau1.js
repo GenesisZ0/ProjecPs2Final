@@ -68,15 +68,6 @@ class Tableau1 extends Phaser.Scene {
         this.persoC.setVisible(true);
         this.persoC.hp = 300;
 
-        // Création du personnage de base
-        this.ai = this.physics.add.sprite(900, 225, 'grenouille').setOrigin(0, 0);
-        this.ai.setDisplaySize(50, 75);
-        this.ai.body.setAllowGravity(true);
-        this.ai.setVisible(true);
-        this.spawn1X = this.ai.x
-        this.spawn1Y = this.ai.y
-        this.stop = this.ai.x
-
 
         // Création Ia qui snipe
         this.ai2 = this.physics.add.sprite(50, 0, 'grenouille').setOrigin(0, 0);
@@ -102,7 +93,7 @@ class Tableau1 extends Phaser.Scene {
         );
 
         // chargement du calque plateformes
-        const platforms = map.createLayer(
+        this.platforms = map.createLayer(
             "calque_plateformes",
             tileset
         );
@@ -118,24 +109,20 @@ class Tableau1 extends Phaser.Scene {
 
         });
 
-        platforms.setCollisionByExclusion(-1, true);
+        this.platforms.setCollisionByExclusion(-1, true);
 
 
         // target or player's x, y
         const tx = this.perso.x
         const ty = this.perso.y
 
-        const iax = this.ai.x;
-        const iay = this.ai.y;
-
 
         // Creation des collision
 
-        this.physics.add.collider(this.persoC, platforms);
-        this.physics.add.collider(this.perso, platforms);
+        this.physics.add.collider(this.persoC, this.platforms);
+        this.physics.add.collider(this.perso, this.platforms);
         this.physics.add.collider(this.sword, this.perso);
-        this.physics.add.collider(this.ai, platforms);
-        this.physics.add.collider(this.ai2, platforms);
+        this.physics.add.collider(this.ai2, this.platforms);
 
 
         this.initKeyboard();
@@ -159,6 +146,8 @@ class Tableau1 extends Phaser.Scene {
 
 
         })
+
+this.ai = new ai(this)
 
 
     }
@@ -221,112 +210,6 @@ class Tableau1 extends Phaser.Scene {
 
     }
 
-
-    IaGesttion(monstre) {
-        this.gauche = false;
-        this.stop = monstre.x;
-        if (!this.hide) {
-            this.dist = Phaser.Math.Distance.BetweenPoints(this.perso, monstre);
-
-            if (this.dist <= 300) {
-                this.time.addEvent({delay: 1000});
-                this.spot = false;
-                if (this.perso.x <= monstre.x) {
-                    monstre.setVelocityX(-200)
-                    this.gauche = true;
-                } else if (this.perso.x >= monstre.x) {
-                    monstre.setVelocityX(200)
-
-
-                }
-
-
-                this.time.addEvent({delay: 50, callback: this.Jump, callbackScope: this});
-
-                if (this.dist <= 100) {
-                    this.attackAi()
-                }
-            } else {
-                if (monstre.x === this.spawn1X) {
-                    console.log(monstre.x)
-                    console.log(this.spawn1X)
-                    this.spot = true;
-                    console.log(this.spot);
-                    if (monstre.x >= this.spawn1X - 10 && this.spot === true) {
-                        this.physics.moveTo(monstre, this.spawn1X + 20, this.spawn1Y, 50);
-                    } else if (monstre.x <= this.spawn1X + 10 && this.spot === true) {
-                        this.physics.moveTo(monstre, this.spawn1X - 20, this.spawn1Y, 50);
-                    } else {
-                        if (this.spot === false) {
-                            this.physics.moveTo(monstre, this.spawn1X + 10, this.spawn1Y, 50);
-
-                        }
-
-
-                    }
-
-                } else {
-                    if (this.spot === false) {
-                        console.log(this.spot)
-                        console.log(monstre.x)
-                        console.log(this.spawn1X)
-                        this.physics.moveTo(monstre, this.spawn1X, this.spawn1Y, 200);
-                        if(monstre.x === this.spawn1X){
-                            this.spot = true;
-                        }
-
-
-                    } else if (monstre.x >= this.spawn1X + 50) {
-                        this.physics.moveTo(monstre, this.spawn1X - 20, this.spawn1Y, 50);
-                        this.spot = true
-
-                    } else if (monstre.x <= this.spawn1X - 50) {
-                        console.log("zeub")
-                        this.physics.moveTo(monstre, this.spawn1X + 20, this.spawn1Y, 50);
-                        this.spot = true
-                    }
-
-                }
-
-            }
-        } else {
-            if (monstre.x === this.spawn1X) {
-                console.log("test")
-            } else {
-                this.physics.moveTo(monstre, this.spawn1X, this.spawn1Y, 200);
-            }
-
-        }
-
-
-    }
-
-    attackAi() {
-        this.ai.setVelocityX(0);
-
-        if (this.CD === true) {
-            this.sword.y = this.ai.y + 47;
-
-            if (this.gauche === true) {
-                this.sword.x = this.ai.x - 10;
-                this.sword.flipX = true;
-            } else {
-                this.sword.x = this.ai.x + 60;
-                this.sword.flipX = false;
-            }
-
-            //On rend l'épée visible
-            this.sword.setVisible(true);
-            //On active le body de l'épée
-            this.sword.enableBody()
-            //On ajoute un event avec un delay qui fera disparaitre l'épée dans 50 ms
-            this.time.addEvent({delay: 50, callback: this.onEvent, callbackScope: this});
-
-        } else {
-            this.time.addEvent({delay: 1000, callback: this.cd, callbackScope: this});
-        }
-    }
-
     cd() {
         this.CD = true;
         console.log("neuneu")
@@ -337,14 +220,6 @@ class Tableau1 extends Phaser.Scene {
         this.sword.setVisible(false);
         this.CD = false;
         console.log("on se retire")
-    }
-
-    Jump() {
-        if (this.stop === this.ai.x && this.dist >= 100) {
-            console.log(this.stop);
-            this.ai.set
-            this.ai.setVelocityY(-100);
-        }
     }
 
 
@@ -407,10 +282,7 @@ class Tableau1 extends Phaser.Scene {
             tir.update();
         }
 
-
-        this.IaGesttion(this.ai);
-
-
+        this.ai.IaGesttion()
 
         this.rouch();
         if (this.crouch === true) {
