@@ -282,7 +282,7 @@ this.ai = new ai(this)
             tir.update();
         }
 
-        this.ai.IaGesttion()
+        this.ai.IaGesttion(this.ai.ai);
 
         this.rouch();
         if (this.crouch === true) {

@@ -17,20 +17,20 @@ class ai {
         this.scene.physics.add.collider(this.ai, this.scene.platforms);
 
     }
-    IaGesttion() {
+    IaGesttion(ai) {
         this.gauche = false;
-        this.stop =  this.ai.x;
+        this.stop = ai.x;
         if (!this.scene.hide) {
-            this.dist = Phaser.Math.Distance.BetweenPoints(this.scene.perso, this.ai);
+            this.dist = Phaser.Math.Distance.BetweenPoints(this.scene.perso, ai);
 
             if (this.dist <= 300) {
                 this.scene.time.addEvent({delay: 1000});
                 this.spot = false;
-                if (this.scene.perso.x <= this.ai.x) {
-                    this.ai.setVelocityX(-200)
+                if (this.scene.perso.x <= ai.x) {
+                   ai.setVelocityX(-200)
                     this.gauche = true;
-                } else if (this.scene.perso.x >=  this.ai.x) {
-                    this.ai.setVelocityX(200)
+                } else if (this.scene.perso.x >=  ai.x) {
+                   ai.setVelocityX(200)
 
 
                 }
@@ -42,18 +42,18 @@ class ai {
                     this.attackAi()
                 }
             } else {
-                if ( this.ai.x === this.spawn1X) {
-                    console.log( this.ai.x)
+                if ( ai.x === this.spawn1X) {
+                    console.log( ai.x)
                     console.log(this.spawn1X)
                     this.spot = true;
                     console.log(this.spot);
-                    if ( this.ai.x >= this.spawn1X - 10 && this.spot === true) {
-                        this.scene.physics.moveTo( this.ai, this.spawn1X + 20, this.spawn1Y, 50);
-                    } else if ( this.ai.x <= this.spawn1X + 10 && this.spot === true) {
-                        this.scene.physics.moveTo( this.ai, this.spawn1X - 20, this.spawn1Y, 50);
+                    if ( ai.x >= this.spawn1X - 10 && this.spot === true) {
+                        this.scene.physics.moveTo( ai, this.spawn1X + 20, this.spawn1Y, 50);
+                    } else if (ai.x <= this.spawn1X + 10 && this.spot === true) {
+                        this.scene.physics.moveTo( ai, this.spawn1X - 20, this.spawn1Y, 50);
                     } else {
                         if (this.spot === false) {
-                            this.scene.physics.moveTo( this.ai, this.spawn1X + 10, this.spawn1Y, 50);
+                            this.scene.physics.moveTo( ai, this.spawn1X + 10, this.spawn1Y, 50);
 
                         }
 
@@ -63,21 +63,21 @@ class ai {
                 } else {
                     if (this.spot === false) {
                         console.log(this.spot)
-                        console.log( this.ai.x)
+                        console.log( ai.x)
                         console.log(this.spawn1X)
-                        this.scene.physics.moveTo( this.ai, this.spawn1X, this.spawn1Y, 200);
-                        if( this.ai.x === this.spawn1X){
+                        this.scene.physics.moveTo( ai, this.spawn1X, this.spawn1Y, 200);
+                        if( ai.x === this.spawn1X){
                             this.spot = true;
                         }
 
 
-                    } else if ( this.ai.x >= this.spawn1X + 50) {
-                        this.scene.physics.moveTo( this.ai, this.spawn1X - 20, this.spawn1Y, 50);
+                    } else if ( ai.x >= this.spawn1X + 50) {
+                        this.scene.physics.moveTo( ai, this.spawn1X - 20, this.spawn1Y, 50);
                         this.spot = true
 
-                    } else if ( this.ai.x <= this.spawn1X - 50) {
+                    } else if ( ai.x <= this.spawn1X - 50) {
                         console.log("zeub")
-                        this.scene.physics.moveTo( this.ai, this.spawn1X + 20, this.spawn1Y, 50);
+                        this.scene.physics.moveTo( ai, this.spawn1X + 20, this.spawn1Y, 50);
                         this.spot = true
                     }
 
@@ -85,10 +85,10 @@ class ai {
 
             }
         } else {
-            if ( this.ai.x === this.spawn1X) {
+            if (ai.x === this.spawn1X) {
                 console.log("test")
             } else {
-                this.scene.physics.moveTo( this.ai, this.spawn1X, this.spawn1Y, 200);
+                this.scene.physics.moveTo( ai, this.spawn1X, this.spawn1Y, 200);
             }
 
         }
