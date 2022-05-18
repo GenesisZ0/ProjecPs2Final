@@ -148,8 +148,9 @@ class Tableau1 extends Phaser.Scene {
         })
 
 this.ai = new ai(this)
+this.ai2 = new ai(this)
 
-
+this.ai2.ai.x = 250
     }
 
 
@@ -283,6 +284,8 @@ this.ai = new ai(this)
         }
 
         this.ai.IaGesttion(this.ai.ai);
+        this.ai.IaGesttion(this.ai2.ai)
+        this.ai.followBox();
 
         this.rouch();
         if (this.crouch === true) {

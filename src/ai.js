@@ -8,6 +8,12 @@ class ai {
         this.ai.setVisible(true);
         this.spawn1X = this.ai.x
         this.spawn1Y = this.ai.y
+
+        this.detectionBox = this.scene.physics.add.sprite(900, 200, 'Arme1').setOrigin(0, 0);
+        this.detectionBox.setDisplaySize(200, 75);
+        this.detectionBox.body.setAllowGravity(false);
+        this.detectionBox.setVisible(false);
+
         this.stop = this.ai.x
 
         const iax = this.ai.x;
@@ -126,5 +132,17 @@ class ai {
             this.ai.set
             this.ai.setVelocityY(-100);
         }
+    }
+    followBox(){
+        if(this.ai.body.velocity.x < 0){
+
+            this.detectionBox.x = this.ai.x -200;
+            this.detectionBox.y = this.ai.y -15;
+        }
+        else{
+            this.detectionBox.y = this.ai.y -15;
+            this.detectionBox.x = this.ai.x +50;
+        }
+
     }
 }
