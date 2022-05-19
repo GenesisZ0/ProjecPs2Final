@@ -138,12 +138,27 @@ class Tableau1 extends Phaser.Scene {
 
 
 
+        const objectsLayer = map.getObjectLayer('AI')
+        objectsLayer.objects.forEach(objData=> {
+            const {x = 0, y = 0, name} = objData
+
+            switch (name) {
+                case 'Spawn1': {
+                    this.ai = new ai(this)
+                    this.ai.ai.x = x
+                    break;
+                }
+                case 'Spawn2': {
+                    this.ai2 = new ai(this)
+                    this.ai2.ai.x = x
+                    break;
+
+                }
+            }
+        })
 
 
-    this.ai = new ai(this)
-    this.ai2 = new ai(this)
 
-    this.ai2.ai.x = 250
 
 
     this.spawn1X = this.ai.ai.x
@@ -304,6 +319,7 @@ class Tableau1 extends Phaser.Scene {
         this.ai.followBox(this.ai.ai,this.ai.detectionBox);
         this.ai.followBox(this.ai2.ai,this.ai2.detectionBox);
         this.cameraZoom()
+
 
 
         this.rouch();

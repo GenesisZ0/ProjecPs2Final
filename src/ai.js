@@ -16,13 +16,14 @@ class ai {
         this.stop = this.ai.x
 
         this.scene.physics.add.collider(this.ai, this.scene.platforms);
+        this.dist = Phaser.Math.Distance.BetweenPoints(this.scene.perso, ai);
 
     }
     IaGesttion(ai,spawnX,spawnY,detectionBox) {
         this.gauche = false;
         this.stop = ai.x;
         if (!this.scene.hide) {
-            this.dist = Phaser.Math.Distance.BetweenPoints(this.scene.perso, ai);
+
 
             if (this.scene.physics.overlap(this.scene.perso,detectionBox)) {
             this.iaDetection(ai)

@@ -10,6 +10,7 @@ let gameConfig = {
             debug : true,
             gravity: { y: 800},
             fps : 120
+
         }
     },
     scene: new Tableau1()
