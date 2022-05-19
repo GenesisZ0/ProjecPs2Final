@@ -6,8 +6,7 @@ class ai {
         this.ai.setDisplaySize(50, 75);
         this.ai.body.setAllowGravity(true);
         this.ai.setVisible(true);
-        this.spawn1X = this.ai.x
-        this.spawn1Y = this.ai.y
+
 
         this.detectionBox = this.scene.physics.add.sprite(900, 200, 'Arme1').setOrigin(0, 0);
         this.detectionBox.setDisplaySize(200, 75);
@@ -16,53 +15,33 @@ class ai {
 
         this.stop = this.ai.x
 
-        const iax = this.ai.x;
-        const iay = this.ai.y;
-
-
         this.scene.physics.add.collider(this.ai, this.scene.platforms);
 
     }
-    IaGesttion(ai) {
+    IaGesttion(ai,spawnX,spawnY,detectionBox) {
         this.gauche = false;
         this.stop = ai.x;
         if (!this.scene.hide) {
             this.dist = Phaser.Math.Distance.BetweenPoints(this.scene.perso, ai);
 
-            if (this.dist <= 300) {
-                this.scene.time.addEvent({delay: 1000});
-                this.spot = false;
-                if (this.scene.perso.x <= ai.x) {
-                   ai.setVelocityX(-200)
-                    this.gauche = true;
-                } else if (this.scene.perso.x >=  ai.x) {
-                   ai.setVelocityX(200)
-
-
-                }
-
-
-                this.scene.time.addEvent({delay: 50, callback: this.Jump, callbackScope: this});
-
-                if (this.dist <= 100) {
-                    this.attackAi()
-                }
-            } else {
-                if ( ai.x === this.spawn1X) {
+            if (this.scene.physics.overlap(this.scene.perso,detectionBox)) {
+            this.iaDetection(ai)
+            }
+            else {
+                if ( Math.round(ai.x) === spawnX) {
                     console.log( ai.x)
-                    console.log(this.spawn1X)
+                    console.log(spawnX)
                     this.spot = true;
                     console.log(this.spot);
-                    if ( ai.x >= this.spawn1X - 10 && this.spot === true) {
-                        this.scene.physics.moveTo( ai, this.spawn1X + 20, this.spawn1Y, 50);
-                    } else if (ai.x <= this.spawn1X + 10 && this.spot === true) {
-                        this.scene.physics.moveTo( ai, this.spawn1X - 20, this.spawn1Y, 50);
+                    if ( ai.x >= spawnX - 10 && this.spot === true) {
+                        this.scene.physics.moveTo( ai, spawnX + 20, spawnY, 50);
+                    } else if (ai.x <= spawnX + 10 && this.spot === true) {
+                        this.scene.physics.moveTo( ai, spawnX - 20, spawnY, 50);
                     } else {
                         if (this.spot === false) {
-                            this.scene.physics.moveTo( ai, this.spawn1X + 10, this.spawn1Y, 50);
+                            this.scene.physics.moveTo( ai, spawnX + 10, spawnY, 50);
 
                         }
-
 
                     }
 
@@ -70,20 +49,20 @@ class ai {
                     if (this.spot === false) {
                         console.log(this.spot)
                         console.log( ai.x)
-                        console.log(this.spawn1X)
-                        this.scene.physics.moveTo( ai, this.spawn1X, this.spawn1Y, 200);
-                        if( ai.x === this.spawn1X){
+                        console.log(spawnX)
+                        this.scene.physics.moveTo( ai, spawnX, spawnY, 200);
+                        if( ai.x === spawnX){
                             this.spot = true;
                         }
 
 
-                    } else if ( ai.x >= this.spawn1X + 50) {
-                        this.scene.physics.moveTo( ai, this.spawn1X - 20, this.spawn1Y, 50);
+                    } else if ( ai.x >= spawnX + 50) {
+                        this.scene.physics.moveTo( ai, spawnX - 20, spawnY, 50);
                         this.spot = true
 
-                    } else if ( ai.x <= this.spawn1X - 50) {
+                    } else if ( ai.x <= spawnX - 50) {
                         console.log("zeub")
-                        this.scene.physics.moveTo( ai, this.spawn1X + 20, this.spawn1Y, 50);
+                        this.scene.physics.moveTo( ai, spawnX + 20, spawnY, 50);
                         this.spot = true
                     }
 
@@ -91,27 +70,49 @@ class ai {
 
             }
         } else {
-            if (ai.x === this.spawn1X) {
+            if (ai.x === spawnX) {
                 console.log("test")
             } else {
-                this.scene.physics.moveTo( ai, this.spawn1X, this.spawn1Y, 200);
+                this.scene.physics.moveTo( ai, spawnX, spawnY, 200);
             }
 
         }
 
 
     }
-    attackAi() {
-        this.ai.setVelocityX(0);
+
+    iaDetection(ai){
+        this.scene.time.addEvent({delay: 1000});
+        this.spot = false;
+        if (this.scene.perso.x <= ai.x) {
+            ai.setVelocityX(-200)
+            this.gauche = true;
+        } else if (this.scene.perso.x >=  ai.x) {
+            ai.setVelocityX(200)
+
+
+        }
+
+
+        this.scene.time.addEvent({delay: 50, callback: this.Jump(ai), callbackScope: this});
+
+        if (this.dist <= 100) {
+            this.attackAi(ai)
+        }
+
+    }
+
+    attackAi(ai) {
+        ai.setVelocityX(0);
 
         if (this.scene.CD === true) {
-            this.scene.sword.y = this.ai.y + 47;
+            this.scene.sword.y = ai.y + 47;
 
             if (this.gauche === true) {
-                this.scene.sword.x = this.ai.x - 10;
+                this.scene.sword.x = ai.x - 10;
                 this.scene.sword.flipX = true;
             } else {
-                this.scene.sword.x = this.ai.x + 60;
+                this.scene.sword.x = ai.x + 60;
                 this.scene.sword.flipX = false;
             }
 
@@ -126,23 +127,24 @@ class ai {
             this.scene.time.addEvent({delay: 1000, callback: this.scene.cd, callbackScope: this});
         }
     }
-    Jump() {
-        if (this.stop === this.ai.x && this.dist >= 100) {
+    Jump(ai) {
+        if (Math.round(this.stop) === ai.x && this.dist >= 100) {
             console.log(this.stop);
-            this.ai.set
-            this.ai.setVelocityY(-100);
+            ai.set
+            ai.setVelocityY(-100);
         }
     }
-    followBox(){
-        if(this.ai.body.velocity.x < 0){
+    followBox(ai,detectionBox){
+        if(ai.body.velocity.x < 0){
 
-            this.detectionBox.x = this.ai.x -200;
-            this.detectionBox.y = this.ai.y -15;
+            detectionBox.x = ai.x -200;
+            detectionBox.y = ai.y -15;
         }
         else{
-            this.detectionBox.y = this.ai.y -15;
-            this.detectionBox.x = this.ai.x +50;
+            detectionBox.y = ai.y -15;
+            detectionBox.x = ai.x +50;
         }
 
     }
+
 }

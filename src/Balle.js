@@ -1,3 +1,4 @@
+
 class Balle  {
     constructor(Tableau1){
         let me = this
@@ -24,7 +25,7 @@ class Balle  {
 
 
 
-    update(){
+    updateBalle(){
 
         let me = this;
 

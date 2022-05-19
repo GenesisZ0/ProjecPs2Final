@@ -35,7 +35,7 @@ class Tableau1 extends Phaser.Scene {
         this.hide = false;
         this.spot = false;
         this.PersoVX = 220;
-        let cam = this.cameras.main;
+
 
 
         this.speed = {
@@ -136,24 +136,39 @@ class Tableau1 extends Phaser.Scene {
 
         this.time.addEvent({delay: 500, callback: this.tir, callbackScope: this, loop: true});
 
-        this.physics.add.overlap(this.persoC, this.HauteHerbe, function () {
-            if(me.hide === true){
-                cam.zoomTo(0.9, 500);
-            }
-            else {
-                cam.zoomTo(1, 1000);
-            }
 
 
-        })
 
-this.ai = new ai(this)
-this.ai2 = new ai(this)
 
-this.ai2.ai.x = 250
+    this.ai = new ai(this)
+    this.ai2 = new ai(this)
+
+    this.ai2.ai.x = 250
+
+
+    this.spawn1X = this.ai.ai.x
+    this.spawn1Y = this.ai.ai.y
+    this.spawn2X = this.ai2.ai.x
+    this.spawn2Y = this.ai2.ai.y
+
+
+
+
+
     }
 
 
+    cameraZoom(){
+        let cam = this.cameras.main;
+        let me = this;
+
+        if(me.hide === true){
+            cam.zoomTo(0.9, 500);
+        }
+        else {
+            cam.zoomTo(1, 1000);
+        }
+    }
     rouch() {
         if (this.crouch === true) {
             this.cameras.main.startFollow(this.persoC, false);
@@ -195,9 +210,9 @@ this.ai2.ai.x = 250
 
     }
 
-    IaGestion2() {
+    IaGestion2(ai) {
         if (this.hide == false) {
-            this.dist2 = Phaser.Math.Distance.BetweenPoints(this.perso, this.ai2);
+            this.dist2 = Phaser.Math.Distance.BetweenPoints(this.perso, ai);
 
             if (this.dist2 <= 400) {
                 this.tireD = true
@@ -217,8 +232,7 @@ this.ai2.ai.x = 250
     }
 
     onEvent() {
-        this.sword.disableBody()
-        this.sword.setVisible(false);
+
         this.CD = false;
         console.log("on se retire")
     }
@@ -241,6 +255,7 @@ this.ai2.ai.x = 250
     }
 
     update() {
+        //this.balle.updateBalle()
         if (this.shiftDown && this.rightDown) {
             if (this.flag) {
 
@@ -283,9 +298,13 @@ this.ai2.ai.x = 250
             tir.update();
         }
 
-        this.ai.IaGesttion(this.ai.ai);
-        this.ai.IaGesttion(this.ai2.ai)
-        this.ai.followBox();
+        this.ai2.detectionBox.x = 100;
+        this.ai.IaGesttion(this.ai.ai,this.spawn1X,this.spawn1Y,this.ai.detectionBox);
+        this.ai.IaGesttion(this.ai2.ai,this.spawn2X,this.spawn2Y,this.ai2.detectionBox)
+        this.ai.followBox(this.ai.ai,this.ai.detectionBox);
+        this.ai.followBox(this.ai2.ai,this.ai2.detectionBox);
+        this.cameraZoom()
+
 
         this.rouch();
         if (this.crouch === true) {
@@ -362,6 +381,7 @@ this.ai2.ai.x = 250
 
                     }
                 break;
+
 
 
                 case Phaser.Input.Keyboard.KeyCodes.SPACE:
