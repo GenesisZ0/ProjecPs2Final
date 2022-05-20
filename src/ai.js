@@ -19,6 +19,9 @@ class ai {
         this.dist = Phaser.Math.Distance.BetweenPoints(this.scene.perso, ai);
 
     }
+
+
+
     IaGesttion(ai,spawnX,spawnY,detectionBox) {
         this.gauche = false;
         this.stop = ai.x;
@@ -29,52 +32,14 @@ class ai {
             this.iaDetection(ai)
             }
             else {
-                if ( Math.round(ai.x) === spawnX) {
-                    console.log( ai.x)
-                    console.log(spawnX)
-                    this.spot = true;
-                    console.log(this.spot);
-                    if ( ai.x >= spawnX - 10 && this.spot === true) {
-                        this.scene.physics.moveTo( ai, spawnX + 20, spawnY, 50);
-                    } else if (ai.x <= spawnX + 10 && this.spot === true) {
-                        this.scene.physics.moveTo( ai, spawnX - 20, spawnY, 50);
-                    } else {
-                        if (this.spot === false) {
-                            this.scene.physics.moveTo( ai, spawnX + 10, spawnY, 50);
-
-                        }
-
-                    }
-
-                } else {
-                    if (this.spot === false) {
-                        console.log(this.spot)
-                        console.log( ai.x)
-                        console.log(spawnX)
-                        this.scene.physics.moveTo( ai, spawnX, spawnY, 200);
-                        if( ai.x === spawnX){
-                            this.spot = true;
-                        }
-
-
-                    } else if ( ai.x >= spawnX + 50) {
-                        this.scene.physics.moveTo( ai, spawnX - 20, spawnY, 50);
-                        this.spot = true
-
-                    } else if ( ai.x <= spawnX - 50) {
-                        console.log("zeub")
-                        this.scene.physics.moveTo( ai, spawnX + 20, spawnY, 50);
-                        this.spot = true
-                    }
-
-                }
+               this.iaPatterne(ai,spawnX,spawnY)
 
             }
         } else {
             if (ai.x === spawnX) {
-                console.log("test")
+
             } else {
-                this.scene.physics.moveTo( ai, spawnX, spawnY, 200);
+                this.iaPatterne(ai,spawnX,spawnY)
             }
 
         }
@@ -82,6 +47,48 @@ class ai {
 
     }
 
+    iaPatterne(ai,spawnX,spawnY){
+    if ( Math.round(ai.x) === spawnX) {
+        console.log( ai.x)
+        console.log(spawnX)
+        this.spot = true;
+        console.log(this.spot);
+        if ( ai.x >= spawnX - 10 && this.spot === true) {
+            this.scene.physics.moveTo( ai, spawnX + 20, spawnY, 50);
+        } else if (ai.x <= spawnX + 10 && this.spot === true) {
+            this.scene.physics.moveTo( ai, spawnX - 20, spawnY, 50);
+        } else {
+            if (this.spot === false) {
+                this.scene.physics.moveTo( ai, spawnX + 10, spawnY, 50);
+
+            }
+
+        }
+
+    }
+    else {
+        if (this.spot === false) {
+            console.log(this.spot)
+            console.log( ai.x)
+            console.log(spawnX)
+            this.scene.physics.moveTo( ai, spawnX, spawnY, 200);
+            if( ai.x === spawnX){
+                this.spot = true;
+            }
+
+
+        } else if ( ai.x >= spawnX + 50) {
+            this.scene.physics.moveTo( ai, spawnX - 20, spawnY, 50);
+            this.spot = true
+
+        } else if ( ai.x <= spawnX - 50) {
+            console.log("zeub")
+            this.scene.physics.moveTo( ai, spawnX + 20, spawnY, 50);
+            this.spot = true
+        }
+
+    }
+}
     iaDetection(ai){
         this.scene.time.addEvent({delay: 1000});
         this.spot = false;
