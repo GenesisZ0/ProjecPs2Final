@@ -106,35 +106,15 @@ class ai {
         this.scene.time.addEvent({delay: 50, callback: this.Jump(ai), callbackScope: this});
 
         if (this.dist <= 100) {
+            console.log("efnkldnlnl")
             this.attackAi(ai)
         }
 
     }
 
     attackAi(ai) {
-        ai.setVelocityX(0);
-
-        if (this.scene.CD === true) {
-            this.scene.sword.y = ai.y + 47;
-
-            if (this.gauche === true) {
-                this.scene.sword.x = ai.x - 10;
-                this.scene.sword.flipX = true;
-            } else {
-                this.scene.sword.x = ai.x + 60;
-                this.scene.sword.flipX = false;
-            }
-
-            //On rend l'épée visible
-            this.scene.sword.setVisible(true);
-            //On active le body de l'épée
-            this.scene.sword.enableBody()
-            //On ajoute un event avec un delay qui fera disparaitre l'épée dans 50 ms
-            this.scene.time.addEvent({delay: 50, callback: this.scene.onEvent, callbackScope: this});
-
-        } else {
-            this.scene.time.addEvent({delay: 1000, callback: this.scene.cd, callbackScope: this});
-        }
+        console.log("testATK")
+        this.scene.perso.destroy();
     }
     Jump(ai) {
         if (Math.round(this.stop) === ai.x && this.dist >= 100) {;

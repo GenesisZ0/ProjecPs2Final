@@ -152,8 +152,11 @@ class Tableau1 extends Phaser.Scene {
         })
 
 
+        this.caisse = new Caisse(this)
 
 
+        this.physics.add.overlap(this.perso, this.caisse.caisse)
+        this.physics.add.collider(this.caisse.caisse, this.platforms);
 
     this.spawn1X = this.ai.ai.x
     this.spawn1Y = this.ai.ai.y
@@ -396,6 +399,13 @@ class Tableau1 extends Phaser.Scene {
                     me.shiftDown=true;
 
                     break;
+                case Phaser.Input.Keyboard.KeyCodes.E:
+              if (me.physics.overlap(me.perso,me.caisse.caisse)){
+                 me.caisse.caisse.body.setAllowGravity(true);
+              }
+
+                    break;
+
 
 
             }
