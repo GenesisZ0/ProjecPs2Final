@@ -23,7 +23,7 @@ class ai {
 
 
     IaGesttion(ai,spawnX,spawnY,detectionBox) {
-        this.dist = Phaser.Math.Distance.BetweenPoints(this.scene.perso, ai);
+        this.dist = Phaser.Math.Distance.BetweenPoints(this.scene.perso, this.scene.ai.ai);
 
         this.gauche = false;
         this.stop = ai.x;

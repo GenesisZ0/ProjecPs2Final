@@ -21,8 +21,16 @@ class Tableau1 extends Phaser.Scene {
         this.load.tilemapTiledJSON("map", "assets/MapBasique.json");
         this.load.image('HauteHerbe', 'assets/herbe.png');
 
+        this.loadFrames("idle", 7,"assets/player/idle")
+        this.loadFrames("run", 10,"assets/run/run")
+
     }
 
+    loadFrames(prefix,length,baseUrl){
+        for (let i=1;i<=length;i++){
+            this.load.image(prefix+i,baseUrl+i+'.png')
+        }
+    }
 
     create() {
 
@@ -55,8 +63,8 @@ class Tableau1 extends Phaser.Scene {
         });
 
         // Création du personnage de base
-        this.perso = this.physics.add.sprite(400, 950, 'circle').setOrigin(0, 0);
-        this.perso.setDisplaySize(30, 60);
+        this.perso = this.physics.add.sprite(400, 750, 'idle1').setOrigin(0, 0);
+        this.perso.setDisplaySize(52, 68);
         this.perso.body.setAllowGravity(true);
         this.perso.setVisible(true);
         this.perso.hp = 300;
@@ -163,10 +171,43 @@ class Tableau1 extends Phaser.Scene {
     this.spawn2X = this.ai2.ai.x
     this.spawn2Y = this.ai2.ai.y
 
+        this.idle = this.add.sprite(0, 0, 'idle').setOrigin(0, 0);
+        //animation de 3 images
+        this.anims.create({
+            key: 'idle',
+            frames: [
+                {key: 'idle1'},
+                {key: 'idle2'},
+                {key: 'idle3'},
+                {key: 'idle4'},
+                {key: 'idle5'},
+                {key: 'idle6'},
+                {key: 'idle7'},
+            ],
+            frameRate: 7,
+            repeat: -1
+        });
+        this.perso.play("idle")
 
 
-
-
+        this.run = this.add.sprite(0, 0, 'run').setOrigin(0, 0);
+        this.anims.create({
+            key: 'run',
+            frames: [
+                {key: 'run1'},
+                {key: 'run2'},
+                {key: 'run3'},
+                {key: 'run4'},
+                {key: 'run5'},
+                {key: 'run6'},
+                {key: 'run7'},
+                {key: 'run8'},
+                {key: 'run9'},
+                {key: 'run10'},
+            ],
+            frameRate: 10,
+            repeat: -1
+        });
     }
 
 
@@ -259,7 +300,12 @@ class Tableau1 extends Phaser.Scene {
             this.hide = true;
         }
     }
-
+    stop(){
+        this.perso.setVelocityX(0);
+        if (this.perso.body.onFloor()) {
+            this.perso.play('idle',true)
+        }
+    }
     update() {
 
         console.log(this.ai.dist)
@@ -334,6 +380,7 @@ class Tableau1 extends Phaser.Scene {
                     break;
 
                 case Phaser.Input.Keyboard.KeyCodes.Q:
+                    me.perso.play('idle')
                     me.leftDown=false;
                     if(me.crouch === true){
                         me.persoC.setVelocityX(0);
@@ -341,6 +388,7 @@ class Tableau1 extends Phaser.Scene {
                     me.perso.setVelocityX(0);
                     break;
                 case Phaser.Input.Keyboard.KeyCodes.D:
+                    me.perso.play('idle')
                     me.rightDown=false;
                     if(me.crouch === true){
                         me.persoC.setVelocityX(0);
@@ -353,21 +401,35 @@ class Tableau1 extends Phaser.Scene {
             switch (kevent.keyCode) {
 
                 case Phaser.Input.Keyboard.KeyCodes.Q:
+                    me.perso.play('run',true)
                     me.leftDown=true;
-                        if(me.crouch === true){
-                            me.persoC.setVelocityX(-100);
-                        }
-                        me.gauche = true;
-                        me.perso.setVelocityX(me.PersoVX * -1);
+
+
+
+
+                    if(me.crouch === true){
+                        me.persoC.setVelocityX(-100);
+                    }
+                    me.gauche = true;
+                    if (me.gauche === true){
+                        me.perso.setFlipX(true)
+
+                    }
+                    me.perso.setVelocityX(me.PersoVX * -1);
+
 
                     break;
 
                 case Phaser.Input.Keyboard.KeyCodes.D:
+                    me.perso.play('run',true)
                     me.rightDown=true;
                     if(me.crouch === true){
                         me.persoC.setVelocityX(100);
                     }
                         me.gauche = false;
+                    if (me.gauche === false){
+                        me.perso.setFlipX(false)
+                    }
                         me.perso.setVelocityX(me.PersoVX);
 
                     break;
@@ -384,6 +446,7 @@ class Tableau1 extends Phaser.Scene {
                     }
                     else {
                         me.crouch = true;
+
 
                         break;
 
@@ -408,6 +471,9 @@ class Tableau1 extends Phaser.Scene {
               }
 
                     break;
+
+                default :
+                    me.stop();
 
 
 

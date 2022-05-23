@@ -4,6 +4,7 @@ let gameConfig = {
     height: 1080,
     backgroundColor: '#ffffff',
     parent: 'game',
+    pixelArt: true,
     physics: {
         default: 'arcade',
         arcade: {
