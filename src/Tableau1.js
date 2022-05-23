@@ -34,7 +34,7 @@ class Tableau1 extends Phaser.Scene {
         this.crouch = false;
         this.hide = false;
         this.spot = false;
-        this.PersoVX = 220;
+        this.PersoVX = 320;
 
 
 
@@ -55,7 +55,7 @@ class Tableau1 extends Phaser.Scene {
         });
 
         // Création du personnage de base
-        this.perso = this.physics.add.sprite(500, 0, 'circle').setOrigin(0, 0);
+        this.perso = this.physics.add.sprite(400, 950, 'circle').setOrigin(0, 0);
         this.perso.setDisplaySize(30, 60);
         this.perso.body.setAllowGravity(true);
         this.perso.setVisible(true);
@@ -67,13 +67,6 @@ class Tableau1 extends Phaser.Scene {
         this.persoC.body.setAllowGravity(true);
         this.persoC.setVisible(true);
         this.persoC.hp = 300;
-
-
-        // Création Ia qui snipe
-        this.ai2 = this.physics.add.sprite(50, 0, 'grenouille').setOrigin(0, 0);
-        this.ai2.setDisplaySize(50, 75);
-        this.ai2.body.setAllowGravity(true);
-        this.ai2.setVisible(true);
 
 
         this.sword = this.physics.add.sprite(200, 100, "sword").setScale(0.1, 0.1);
@@ -122,7 +115,6 @@ class Tableau1 extends Phaser.Scene {
         this.physics.add.collider(this.persoC, this.platforms);
         this.physics.add.collider(this.perso, this.platforms);
         this.physics.add.collider(this.sword, this.perso);
-        this.physics.add.collider(this.ai2, this.platforms);
 
 
         this.initKeyboard();
@@ -146,11 +138,13 @@ class Tableau1 extends Phaser.Scene {
                 case 'Spawn1': {
                     this.ai = new ai(this)
                     this.ai.ai.x = x
+                    this.ai.ai.y = y -76
                     break;
                 }
                 case 'Spawn2': {
                     this.ai2 = new ai(this)
                     this.ai2.ai.x = x
+                    this.ai2.ai.y = y -76
                     break;
 
                 }
@@ -216,7 +210,6 @@ class Tableau1 extends Phaser.Scene {
             if (this.tireD === true) {
                 this.balle = new Balle(this);
                 this.physics.add.collider(this.perso, this.balle, function () {
-                    console.log("ok")
                 })
             }
 
@@ -231,7 +224,6 @@ class Tableau1 extends Phaser.Scene {
 
             if (this.dist2 <= 400) {
                 this.tireD = true
-                console.log("tire")
 
             } else {
                 this.tireD = false;
@@ -243,13 +235,11 @@ class Tableau1 extends Phaser.Scene {
 
     cd() {
         this.CD = true;
-        console.log("neuneu")
     }
 
     onEvent() {
 
         this.CD = false;
-        console.log("on se retire")
     }
 
 
@@ -262,10 +252,8 @@ class Tableau1 extends Phaser.Scene {
     test() {
         if (this.physics.overlap(this.persoC, this.HauteHerbe) === false) {
             this.hide = false;
-            console.log(this.hide);
         } else {
-            this.hide = true
-            console.log(this.hide);
+            this.hide = true;
         }
     }
 
@@ -279,7 +267,6 @@ class Tableau1 extends Phaser.Scene {
                 this.flag = true;
             }
             this.perso.setVelocityX(1000 * this.speed.speedDash);
-            console.log(this.speed.speedDash);
         }
 
         if (this.shiftDown && this.leftDown) {
@@ -290,7 +277,6 @@ class Tableau1 extends Phaser.Scene {
                 this.flag = true;
             }
             this.perso.setVelocityX(-1000 * this.speed.speedDash);
-            console.log(this.speed.speedDash);
         }
 
 
@@ -403,7 +389,7 @@ class Tableau1 extends Phaser.Scene {
                 case Phaser.Input.Keyboard.KeyCodes.SPACE:
 
                     if (me.perso.body.onFloor(true)){
-                        me.perso.setVelocityY(-350)
+                        me.perso.setVelocityY(-450)
                     }
                     break;
                 case Phaser.Input.Keyboard.KeyCodes.SHIFT:

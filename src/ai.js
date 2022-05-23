@@ -9,7 +9,7 @@ class ai {
 
 
         this.detectionBox = this.scene.physics.add.sprite(900, 200, 'Arme1').setOrigin(0, 0);
-        this.detectionBox.setDisplaySize(200, 75);
+        this.detectionBox.setDisplaySize(500, 75);
         this.detectionBox.body.setAllowGravity(false);
         this.detectionBox.setVisible(false);
 
@@ -29,7 +29,14 @@ class ai {
 
 
             if (this.scene.physics.overlap(this.scene.perso,detectionBox)) {
-            this.iaDetection(ai)
+
+                this.scene.time.addEvent({
+                    delay: 500,
+                    callback: ()=>{
+                        this.iaDetection(ai)
+                    },
+                })
+
             }
             else {
                this.iaPatterne(ai,spawnX,spawnY)
@@ -49,10 +56,8 @@ class ai {
 
     iaPatterne(ai,spawnX,spawnY){
     if ( Math.round(ai.x) === spawnX) {
-        console.log( ai.x)
-        console.log(spawnX)
+
         this.spot = true;
-        console.log(this.spot);
         if ( ai.x >= spawnX - 10 && this.spot === true) {
             this.scene.physics.moveTo( ai, spawnX + 20, spawnY, 50);
         } else if (ai.x <= spawnX + 10 && this.spot === true) {
@@ -68,9 +73,6 @@ class ai {
     }
     else {
         if (this.spot === false) {
-            console.log(this.spot)
-            console.log( ai.x)
-            console.log(spawnX)
             this.scene.physics.moveTo( ai, spawnX, spawnY, 200);
             if( ai.x === spawnX){
                 this.spot = true;
@@ -82,16 +84,15 @@ class ai {
             this.spot = true
 
         } else if ( ai.x <= spawnX - 50) {
-            console.log("zeub")
             this.scene.physics.moveTo( ai, spawnX + 20, spawnY, 50);
             this.spot = true
         }
 
     }
 }
-    iaDetection(ai){
+    iaDetection(ai) {
+        this.currentPlayer = this.scene.perso.x
         this.scene.time.addEvent({delay: 1000});
-        this.spot = false;
         if (this.scene.perso.x <= ai.x) {
             ai.setVelocityX(-200)
             this.gauche = true;
@@ -136,21 +137,20 @@ class ai {
         }
     }
     Jump(ai) {
-        if (Math.round(this.stop) === ai.x && this.dist >= 100) {
-            console.log(this.stop);
-            ai.set
+        if (Math.round(this.stop) === ai.x && this.dist >= 100) {;
+            console.log("saut")
             ai.setVelocityY(-100);
         }
     }
     followBox(ai,detectionBox){
         if(ai.body.velocity.x < 0){
 
-            detectionBox.x = ai.x -200;
+            detectionBox.x = ai.x -450;
             detectionBox.y = ai.y -15;
         }
         else{
             detectionBox.y = ai.y -15;
-            detectionBox.x = ai.x +50;
+            detectionBox.x = ai.x ;
         }
 
     }
