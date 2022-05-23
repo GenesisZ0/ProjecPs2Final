@@ -261,6 +261,9 @@ class Tableau1 extends Phaser.Scene {
     }
 
     update() {
+
+        console.log(this.ai.dist)
+
         //this.balle.updateBalle()
         if (this.shiftDown && this.rightDown) {
             if (this.flag) {

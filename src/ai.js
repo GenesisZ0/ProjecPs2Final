@@ -93,6 +93,11 @@ class ai {
     iaDetection(ai) {
         this.currentPlayer = this.scene.perso.x
         this.scene.time.addEvent({delay: 1000});
+
+        if (this.dist <= 100) {
+            console.log("efnkldnlnl")
+            this.attackAi(ai)
+        }
         if (this.scene.perso.x <= ai.x) {
             ai.setVelocityX(-200)
             this.gauche = true;
@@ -105,10 +110,7 @@ class ai {
 
         this.scene.time.addEvent({delay: 50, callback: this.Jump(ai), callbackScope: this});
 
-        if (this.dist <= 100) {
-            console.log("efnkldnlnl")
-            this.attackAi(ai)
-        }
+
 
     }
 
