@@ -2,8 +2,9 @@ class ai {
     constructor(Tableau1) {
         this.scene= Tableau1
         // Création du personnage de base
-        this.ai = this.scene.physics.add.sprite(900, 225, 'grenouille').setOrigin(0, 0);
-        this.ai.setDisplaySize(50, 75);
+        this.ai = this.scene.physics.add.sprite(900, 225, 'volant1').setOrigin(0, 0);
+        this.ai.setDisplaySize(64, 64);
+        this.ai.setBodySize(30,59)
         this.ai.body.setAllowGravity(true);
         this.ai.setVisible(true);
 
@@ -17,6 +18,22 @@ class ai {
 
         this.scene.physics.add.collider(this.ai, this.scene.platforms);
 
+        this.volant = this.scene.add.sprite(0, 0, 'volant').setOrigin(0, 0);
+        this.scene.anims.create({
+            key: 'volant',
+            frames: [
+                {key: 'volant1'},
+                {key: 'volant2'},
+                {key: 'volant3'},
+                {key: 'volant4'},
+                {key: 'volant5'},
+                {key: 'volant6'},
+            ],
+            frameRate: 20,
+            repeat: -1
+        });
+
+        this.ai.play('volant')
 
     }
 

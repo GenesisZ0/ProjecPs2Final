@@ -23,6 +23,8 @@ class Tableau1 extends Phaser.Scene {
 
         this.loadFrames("idle", 7,"assets/player/idle")
         this.loadFrames("run", 10,"assets/run/run")
+        this.loadFrames("crouch",3,"assets/crouch/crouch")
+        this.loadFrames("volant",6,"assets/Ai/volant")
 
     }
 
@@ -70,10 +72,10 @@ class Tableau1 extends Phaser.Scene {
         this.perso.hp = 300;
 
         // Création du personnage de base
-        this.persoC = this.physics.add.sprite(500, 0, 'circle').setOrigin(0, 0);
-        this.persoC.setDisplaySize(30, 30);
+        this.persoC = this.physics.add.sprite(500, 0, 'crouch1').setOrigin(0, 0);
+        this.persoC.setDisplaySize(52, 54);
         this.persoC.body.setAllowGravity(true);
-        this.persoC.setVisible(true);
+        this.persoC.setVisible(false);
         this.persoC.hp = 300;
 
 
@@ -172,7 +174,6 @@ class Tableau1 extends Phaser.Scene {
     this.spawn2Y = this.ai2.ai.y
 
         this.idle = this.add.sprite(0, 0, 'idle').setOrigin(0, 0);
-        //animation de 3 images
         this.anims.create({
             key: 'idle',
             frames: [
@@ -208,7 +209,27 @@ class Tableau1 extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         });
+
+
+        this.crouch = this.add.sprite(0, 0, 'crouch').setOrigin(0, 0);
+        //animation de 3 images
+        this.anims.create({
+            key: 'crouch',
+            frames: [
+                {key: 'crouch1'},
+                {key: 'crouch2'},
+                {key: 'crouch3'},
+            ],
+            frameRate: 4,
+            repeat: -1
+        });
+
+
+
+        this.cameras.main.startFollow(this.perso)
     }
+
+
 
 
     cameraZoom(){
@@ -222,29 +243,7 @@ class Tableau1 extends Phaser.Scene {
             cam.zoomTo(1, 1000);
         }
     }
-    rouch() {
-        if (this.crouch === true) {
-            this.cameras.main.startFollow(this.persoC, false);
-            this.persoC.enableBody()
-            this.persoC.setVisible(true)
-            this.perso.setVisible(false)
-            this.perso.disableBody(true);
-            this.perso.y = this.persoC.y - 30;
-            this.perso.x = this.persoC.x
 
-
-        } else {
-            this.cameras.main.startFollow(this.perso, false);
-            this.persoC.disableBody()
-            this.persoC.y = this.perso.y + 30;
-            this.persoC.x = this.perso.x
-            this.persoC.setVisible(false)
-            this.perso.setVisible(true)
-            this.perso.enableBody();
-
-
-        }
-    }
 
     tir() {
         let me = this;
@@ -360,12 +359,9 @@ class Tableau1 extends Phaser.Scene {
 
 
 
-        this.rouch();
-        if (this.crouch === true) {
-            this.test()
-        } else {
 
-        }
+
+
 
     }
     initKeyboard() {
@@ -408,6 +404,7 @@ class Tableau1 extends Phaser.Scene {
 
 
                     if(me.crouch === true){
+                        me.persoC.setFlipX(true)
                         me.persoC.setVelocityX(-100);
                     }
                     me.gauche = true;
@@ -424,6 +421,7 @@ class Tableau1 extends Phaser.Scene {
                     me.perso.play('run',true)
                     me.rightDown=true;
                     if(me.crouch === true){
+                        me.persoC.setFlipX(false)
                         me.persoC.setVelocityX(100);
                     }
                         me.gauche = false;
@@ -440,17 +438,31 @@ class Tableau1 extends Phaser.Scene {
                     if (me.crouch === true){
                         me.crouch = false;
                         me.hide = false;
+                        me.perso.x = me.persoC.x
+                        me.perso.y = me.persoC.y-15
+                        me.perso.enableBody()
+                        me.cameras.main.startFollow(me.perso)
+                        me.persoC.setVisible(false)
+                        me.perso.setVisible(true)
                         console.log(me.hide);
 
 
                     }
                     else {
+                        me.persoC.x = me.perso.x
+                        me.persoC.y = me.perso.y+15
+                        me.perso.disableBody()
+                        me.cameras.main.startFollow(me.persoC)
+                        me.persoC.setVisible(true)
+                        me.perso.setVisible(false)
+                        me.persoC.play("crouch")
                         me.crouch = true;
 
 
                         break;
 
                     }
+
                 break;
 
 
