@@ -16,6 +16,8 @@ class Tableau1 extends Phaser.Scene {
 
         // chargement tilemap
         this.load.image("tilemap", "assets/tiles_packed.png");
+        this.load.image("tilemap2", "assets/tilesets/TilSet.png");
+
 
         // chargement de la map en json
         this.load.tilemapTiledJSON("map", "assets/MapBasique.json");
@@ -93,6 +95,11 @@ class Tableau1 extends Phaser.Scene {
         const tileset = map.addTilesetImage(
             "game_tile",
             "tilemap"
+        );
+
+        const tileset2 = map.addTilesetImage(
+            "TilSet",
+            "tilemap2"
         );
 
         // chargement du calque plateformes
@@ -307,6 +314,8 @@ class Tableau1 extends Phaser.Scene {
     }
     update() {
 
+
+        this.cameraZoom()
         console.log(this.ai.dist)
 
         //this.balle.updateBalle()
