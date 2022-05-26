@@ -46,7 +46,7 @@ class Tableau1 extends Phaser.Scene {
         this.crouch = false;
         this.hide = false;
         this.spot = false;
-        this.PersoVX = 320;
+        this.PersoVX = 620;
 
 
 
@@ -67,7 +67,7 @@ class Tableau1 extends Phaser.Scene {
         });
 
         // Création du personnage de base
-        this.perso = this.physics.add.sprite(400, 750, 'idle1').setOrigin(0, 0);
+        this.perso = this.physics.add.sprite(144, 110, 'idle1').setOrigin(0, 0);
         this.perso.setDisplaySize(52, 68);
         this.perso.body.setAllowGravity(true);
         this.perso.setVisible(true);
@@ -109,6 +109,12 @@ class Tableau1 extends Phaser.Scene {
         );
 
         // chargement du calque plateformes
+        this.platforms2 = map.createLayer(
+            "calque_plateformes2",
+            tileset2
+        );
+
+        // chargement du calque plateformes
         this.HauteHerbe = this.physics.add.group({
             allowGravity: false,
             immovable: true
@@ -120,6 +126,7 @@ class Tableau1 extends Phaser.Scene {
         });
 
         this.platforms.setCollisionByExclusion(-1, true);
+        this.platforms2.setCollisionByExclusion(-1, true);
 
 
         // target or player's x, y
@@ -131,6 +138,8 @@ class Tableau1 extends Phaser.Scene {
 
         this.physics.add.collider(this.persoC, this.platforms);
         this.physics.add.collider(this.perso, this.platforms);
+        this.physics.add.collider(this.persoC, this.platforms2);
+        this.physics.add.collider(this.perso, this.platforms2);
         this.physics.add.collider(this.sword, this.perso);
 
 
@@ -173,7 +182,7 @@ class Tableau1 extends Phaser.Scene {
 
 
         this.physics.add.overlap(this.perso, this.caisse.caisse)
-        this.physics.add.collider(this.caisse.caisse, this.platforms);
+        this.physics.add.collider(this.caisse.caisse, this.platforms2);
 
     this.spawn1X = this.ai.ai.x
     this.spawn1Y = this.ai.ai.y
