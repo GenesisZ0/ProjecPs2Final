@@ -17,6 +17,8 @@ class Tableau1 extends Phaser.Scene {
         // chargement tilemap
         this.load.image("tilemap", "assets/tiles_packed.png");
         this.load.image("tilemap2", "assets/tilesets/TilSet.png");
+        this.load.image("demi",'assets/demi.png');
+        this.load.image("laser",'assets/laser.png');
 
 
         // chargement de la map en json
@@ -38,6 +40,13 @@ class Tableau1 extends Phaser.Scene {
 
     create() {
 
+
+
+
+        this.cameras.main.setRoundPixels(true);
+
+        this.scale.resize(1920, 1000);
+
         this.changementAI = false;
         let me = this;
         this.gauche = true;
@@ -46,12 +55,12 @@ class Tableau1 extends Phaser.Scene {
         this.crouch = false;
         this.hide = false;
         this.spot = false;
-        this.PersoVX = 620;
+        this.PersoVX = 520;
 
 
 
         this.speed = {
-            speedDash: 1,
+            speedDash: 1.5,
         }
 
         this.dash = this.tweens.add({
@@ -67,7 +76,7 @@ class Tableau1 extends Phaser.Scene {
         });
 
         // Création du personnage de base
-        this.perso = this.physics.add.sprite(144, 110, 'idle1').setOrigin(0, 0);
+        this.perso = this.physics.add.sprite(144, 110, 'idle1').setOrigin(0, 0);///144   110
         this.perso.setDisplaySize(52, 68);
         this.perso.body.setAllowGravity(true);
         this.perso.setVisible(true);
@@ -88,6 +97,10 @@ class Tableau1 extends Phaser.Scene {
         this.sword.attack = 100
         this.sword.disableBody()
 
+        this.demi = this.physics.add.sprite(5760, 2010, 'demi').setOrigin(0, 0)
+        this.demi.setDisplaySize(500, 24);
+        this.demi.body.setAllowGravity(false)
+        this.demi.setImmovable(true)
 
         // chargement de la map
         const map = this.add.tilemap("map");
@@ -111,6 +124,11 @@ class Tableau1 extends Phaser.Scene {
         // chargement du calque plateformes
         this.platforms2 = map.createLayer(
             "calque_plateformes2",
+            tileset2
+        );
+        // chargement du calque plateformes
+        this.platforms3 = map.createLayer(
+            "calque_plateformes3",
             tileset2
         );
 
@@ -140,6 +158,7 @@ class Tableau1 extends Phaser.Scene {
         this.physics.add.collider(this.perso, this.platforms);
         this.physics.add.collider(this.persoC, this.platforms2);
         this.physics.add.collider(this.perso, this.platforms2);
+        this.physics.add.collider(this.perso, this.demi);
         this.physics.add.collider(this.sword, this.perso);
 
 
@@ -242,7 +261,7 @@ class Tableau1 extends Phaser.Scene {
 
 
 
-        this.cameras.main.startFollow(this.perso)
+        this.cameras.main.startFollow(this.perso,true)
     }
 
 
@@ -253,7 +272,7 @@ class Tableau1 extends Phaser.Scene {
         let me = this;
 
         if(me.hide === true){
-            cam.zoomTo(0.9, 500);
+            cam.zoomTo(0.8, 500);
         }
         else {
             cam.zoomTo(1, 1000);
@@ -321,11 +340,46 @@ class Tableau1 extends Phaser.Scene {
             this.perso.play('idle',true)
         }
     }
+    crouchF(){
+
+
+console.log(this.persoC.anims.key === "crouch" )
+
+        if (this.crouch === true ){
+
+            this.crouch = false;
+            this.hide = false;
+            this.perso.x = this.persoC.x
+            this.perso.y = this.persoC.y-15
+            this.perso.enableBody()
+            this.persoC.disableBody()
+            this.cameras.main.startFollow(this.perso,true)
+            this.persoC.setVisible(false)
+            this.perso.setVisible(true)
+
+        }
+        else {
+
+
+            this.persoC.x = this.perso.x
+            this.persoC.y = this.perso.y+15
+            this.perso.disableBody()
+            this.persoC.enableBody()
+            this.cameras.main.startFollow(this.persoC,true  )
+            this.persoC.setVisible(true)
+            this.perso.setVisible(false)
+            this.persoC.play("crouch")
+            this.crouch = true;
+
+
+
+        }
+    }
     update() {
 
 
+        this.test()
         this.cameraZoom()
-        console.log(this.ai.dist)
 
         //this.balle.updateBalle()
         if (this.shiftDown && this.rightDown) {
@@ -375,13 +429,24 @@ class Tableau1 extends Phaser.Scene {
         this.ai.followBox(this.ai2.ai,this.ai2.detectionBox);
         this.cameraZoom()
 
-
+        if (this.physics.overlap(this.demi,this.perso)){
+            this.persoC.x = this.perso.x
+            this.persoC.y = this.perso.y+15
+            this.perso.disableBody()
+            this.persoC.enableBody()
+            this.cameras.main.startFollow(this.persoC,true  )
+            this.persoC.setVisible(true)
+            this.perso.setVisible(false)
+            this.persoC.play("crouch")
+            this.crouch = true;
+        }
 
 
 
 
 
     }
+
     initKeyboard() {
         let me = this;
 
@@ -453,33 +518,7 @@ class Tableau1 extends Phaser.Scene {
 
                 case Phaser.Input.Keyboard.KeyCodes.C:
 
-                    if (me.crouch === true){
-                        me.crouch = false;
-                        me.hide = false;
-                        me.perso.x = me.persoC.x
-                        me.perso.y = me.persoC.y-15
-                        me.perso.enableBody()
-                        me.cameras.main.startFollow(me.perso)
-                        me.persoC.setVisible(false)
-                        me.perso.setVisible(true)
-                        console.log(me.hide);
-
-
-                    }
-                    else {
-                        me.persoC.x = me.perso.x
-                        me.persoC.y = me.perso.y+15
-                        me.perso.disableBody()
-                        me.cameras.main.startFollow(me.persoC)
-                        me.persoC.setVisible(true)
-                        me.perso.setVisible(false)
-                        me.persoC.play("crouch")
-                        me.crouch = true;
-
-
-                        break;
-
-                    }
+                  me.crouchF();
 
                 break;
 

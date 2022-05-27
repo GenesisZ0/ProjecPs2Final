@@ -9,10 +9,10 @@ class ai {
         this.ai.setVisible(true);
 
 
-        this.detectionBox = this.scene.physics.add.sprite(900, 200, 'Arme1').setOrigin(0, 0);
-        this.detectionBox.setDisplaySize(500, 75);
+        this.detectionBox = this.scene.physics.add.sprite(900, 100, 'laser').setOrigin(0, 0);
         this.detectionBox.body.setAllowGravity(false);
-        this.detectionBox.setVisible(false);
+        this.detectionBox.setVisible(true);
+        this.detectionBox.setDisplaySize(500,200);
 
         this.stop = this.ai.x
 
@@ -47,7 +47,7 @@ class ai {
         if (!this.scene.hide) {
 
 
-            if (this.scene.physics.overlap(this.scene.perso,detectionBox)) {
+            if (this.scene.physics.overlap(this.scene.perso || this.scene.persoC,detectionBox )) {
 
                 this.scene.time.addEvent({
                     delay: 500,
@@ -118,10 +118,10 @@ class ai {
             this.attackAi(ai)
         }
         if (this.scene.perso.x <= ai.x) {
-            ai.setVelocityX(-200)
+            ai.setVelocityX(-550)
             this.gauche = true;
         } else if (this.scene.perso.x >=  ai.x) {
-            ai.setVelocityX(200)
+            ai.setVelocityX(550)
 
 
         }
@@ -146,12 +146,14 @@ class ai {
     followBox(ai,detectionBox){
         if(ai.body.velocity.x < 0){
 
-            detectionBox.x = ai.x -450;
-            detectionBox.y = ai.y -15;
+            detectionBox.x = ai.x -470;
+            detectionBox.y = ai.y -55;
+            detectionBox.setFlipX(false)
         }
         else{
-            detectionBox.y = ai.y -15;
-            detectionBox.x = ai.x ;
+            detectionBox.y = ai.y -55;
+            detectionBox.setFlipX(true)
+            detectionBox.x = ai.x+47 ;
         }
 
     }
