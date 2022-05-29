@@ -24,7 +24,7 @@ class Tableau1 extends Phaser.Scene {
         // chargement de la map en json
         this.load.tilemapTiledJSON("map", "assets/MapBasique.json");
         this.load.image('HauteHerbe', 'assets/herbe.png');
-
+        this.load.image('solD', 'assets/solD.png');
         this.loadFrames("idle", 7,"assets/player/idle")
         this.loadFrames("run", 10,"assets/run/run")
         this.loadFrames("crouch",3,"assets/crouch/crouch")
@@ -76,7 +76,7 @@ class Tableau1 extends Phaser.Scene {
         });
 
         // Création du personnage de base
-        this.perso = this.physics.add.sprite(144, 110, 'idle1').setOrigin(0, 0);///144   110
+        this.perso = this.physics.add.sprite(12384, 2160 -144, 'idle1').setOrigin(0, 0);///144   110
         this.perso.setDisplaySize(52, 68);
         this.perso.body.setAllowGravity(true);
         this.perso.setVisible(true);
@@ -143,6 +143,7 @@ class Tableau1 extends Phaser.Scene {
 
         });
 
+
         this.platforms.setCollisionByExclusion(-1, true);
         this.platforms2.setCollisionByExclusion(-1, true);
 
@@ -169,6 +170,7 @@ class Tableau1 extends Phaser.Scene {
             me.perso.hp -= me.sword.attack;
         })
 
+
         this.projectiles = this.add.group();
 
         this.time.addEvent({delay: 500, callback: this.tir, callbackScope: this, loop: true});
@@ -189,12 +191,47 @@ class Tableau1 extends Phaser.Scene {
                 case 'Spawn2': {
                     this.ai2 = new ai(this)
                     this.ai2.ai.x = x
-                    this.ai2.ai.y = y -76
+                    this.ai2.ai.y = y - 76
+                    break;
+                }
+                case 'Spawn3': {
+                    this.ai3 = new ai(this)
+                    this.ai3.ai.x = x
+                    this.ai3.ai.y = y -76
                     break;
 
                 }
             }
         })
+
+        const DobjectsLayer = map.getObjectLayer('solD')
+        DobjectsLayer.objects.forEach(objData=> {
+            const {x = 0, y = 0,    name} = objData
+
+            switch (name) {
+                case 'sol1': {
+                    this.sol1 = this.physics.add.sprite(x, y-72, 'solD').setOrigin(0, 0)
+                    this.sol1.body.setAllowGravity(false)
+                    this.sol1.body.setImmovable(true)
+                    break;
+                }
+                case 'sol2': {
+                    this.sol2 = this.physics.add.sprite(x, y-72, 'solD').setOrigin(0, 0)
+                    this.sol2.body.setAllowGravity(false)
+                    this.sol2.body.setImmovable(true)
+                    break;
+                }
+                case 'sol3': {
+                    this.sol3 = this.physics.add.sprite(x, y-72, 'solD').setOrigin(0, 0)
+                    this.sol3.body.setAllowGravity(false)
+                    this.sol3.body.setImmovable(true)
+                    break;
+                }
+            }
+        })
+
+
+
 
 
         this.caisse = new Caisse(this)
@@ -202,11 +239,26 @@ class Tableau1 extends Phaser.Scene {
 
         this.physics.add.overlap(this.perso, this.caisse.caisse)
         this.physics.add.collider(this.caisse.caisse, this.platforms2);
+        this.physics.add.collider(this.sol1, this.perso);
+        this.physics.add.collider(this.sol2, this.perso);
+        this.physics.add.collider(this.sol3, this.perso);
+        this.physics.add.collider(this.sol1, this.ai2.ai);
+        this.physics.add.collider(this.sol2, this.ai2.ai);
+        this.physics.add.collider(this.sol3, this.ai2.ai);
 
-    this.spawn1X = this.ai.ai.x
+
+
+
+        this.spawn1X = this.ai.ai.x
     this.spawn1Y = this.ai.ai.y
     this.spawn2X = this.ai2.ai.x
     this.spawn2Y = this.ai2.ai.y
+        this.spawn3X = this.ai3.ai.x
+        this.spawn3Y = this.ai3.ai.y
+
+
+
+
 
         this.idle = this.add.sprite(0, 0, 'idle').setOrigin(0, 0);
         this.anims.create({
@@ -425,8 +477,10 @@ console.log(this.persoC.anims.key === "crouch" )
         this.ai2.detectionBox.x = 100;
         this.ai.IaGesttion(this.ai.ai,this.spawn1X,this.spawn1Y,this.ai.detectionBox);
         this.ai.IaGesttion(this.ai2.ai,this.spawn2X,this.spawn2Y,this.ai2.detectionBox)
+        this.ai.IaGesttion(this.ai3.ai,this.spawn3X,this.spawn3Y,this.ai3.detectionBox)
         this.ai.followBox(this.ai.ai,this.ai.detectionBox);
         this.ai.followBox(this.ai2.ai,this.ai2.detectionBox);
+        this.ai.followBox(this.ai3.ai,this.ai3.detectionBox);
         this.cameraZoom()
 
         if (this.physics.overlap(this.demi,this.perso)){
@@ -440,6 +494,8 @@ console.log(this.persoC.anims.key === "crouch" )
             this.persoC.play("crouch")
             this.crouch = true;
         }
+
+
 
 
 

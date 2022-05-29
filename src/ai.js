@@ -18,6 +18,7 @@ class ai {
 
         this.scene.physics.add.collider(this.ai, this.scene.platforms2);
 
+
         this.volant = this.scene.add.sprite(0, 0, 'volant').setOrigin(0, 0);
         this.scene.anims.create({
             key: 'volant',

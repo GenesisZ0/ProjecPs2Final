@@ -8,7 +8,7 @@ let gameConfig = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug : true,
+            debug : false,
             gravity: { y: 1000},
             fps : 120
 
