@@ -9,7 +9,7 @@ let gameConfig = {
         default: 'arcade',
         arcade: {
             debug : false,
-            gravity: { y: 1000},
+            gravity: { y: 2000},
             fps : 120
 
         }

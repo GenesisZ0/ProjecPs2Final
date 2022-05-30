@@ -2,6 +2,8 @@ class Tableau1 extends Phaser.Scene {
 
 
     preload() {
+        this.load.image('smoke', 'assets/smoke.png')
+
         // Je preload les images autres que Tiled
         this.load.image('circle', 'assets/circle.png');
         this.load.image('circleG', 'assets/circleG.png');
@@ -17,6 +19,7 @@ class Tableau1 extends Phaser.Scene {
         // chargement tilemap
         this.load.image("tilemap", "assets/tiles_packed.png");
         this.load.image("tilemap2", "assets/tilesets/TilSet.png");
+        this.load.image("tilemap2", "assets/tilesets/background.jpg");
         this.load.image("demi",'assets/demi.png');
         this.load.image("laser",'assets/laser.png');
 
@@ -25,6 +28,8 @@ class Tableau1 extends Phaser.Scene {
         this.load.tilemapTiledJSON("map", "assets/MapBasique.json");
         this.load.image('HauteHerbe', 'assets/herbe.png');
         this.load.image('solD', 'assets/solD.png');
+        this.load.image('detec', 'assets/detec.png');
+        this.load.image('bg1', 'assets/bg1.png');
         this.loadFrames("idle", 7,"assets/player/idle")
         this.loadFrames("run", 10,"assets/run/run")
         this.loadFrames("crouch",3,"assets/crouch/crouch")
@@ -42,6 +47,8 @@ class Tableau1 extends Phaser.Scene {
 
 
 
+        this.smoke = this.add.particles('smoke')
+
 
         this.cameras.main.setRoundPixels(true);
 
@@ -56,7 +63,8 @@ class Tableau1 extends Phaser.Scene {
         this.hide = false;
         this.spot = false;
         this.PersoVX = 520;
-
+        this.start = true;
+        this.kan = false
 
 
         this.speed = {
@@ -76,7 +84,12 @@ class Tableau1 extends Phaser.Scene {
         });
 
         // Création du personnage de base
-        this.perso = this.physics.add.sprite(12384, 2160 -144, 'idle1').setOrigin(0, 0);///144   110
+
+        this.bg1 = this.add.sprite(6240, 1500, 'bg1').setOrigin(0, 0);///144   110
+
+
+
+        this.perso = this.physics.add.sprite(6440, 1950, 'idle1').setOrigin(0, 0);///144   110
         this.perso.setDisplaySize(52, 68);
         this.perso.body.setAllowGravity(true);
         this.perso.setVisible(true);
@@ -250,9 +263,9 @@ class Tableau1 extends Phaser.Scene {
 
 
         this.spawn1X = this.ai.ai.x
-    this.spawn1Y = this.ai.ai.y
-    this.spawn2X = this.ai2.ai.x
-    this.spawn2Y = this.ai2.ai.y
+        this.spawn1Y = this.ai.ai.y
+        this.spawn2X = this.ai2.ai.x
+        this.spawn2Y = this.ai2.ai.y
         this.spawn3X = this.ai3.ai.x
         this.spawn3Y = this.ai3.ai.y
 
@@ -392,39 +405,40 @@ class Tableau1 extends Phaser.Scene {
             this.perso.play('idle',true)
         }
     }
+
+    crouchR(){
+        this.crouch = false;
+        this.hide = false;
+        this.perso.x = this.persoC.x
+        this.perso.y = this.persoC.y-15
+        this.perso.enableBody()
+        this.persoC.disableBody()
+        this.cameras.main.startFollow(this.perso,true)
+        this.persoC.setVisible(false)
+        this.perso.setVisible(true)
+
+    }
+    crouchD(){
+        this.persoC.x = this.perso.x
+        this.persoC.y = this.perso.y+15
+        this.perso.disableBody()
+        this.persoC.enableBody()
+        this.cameras.main.startFollow(this.persoC,true  )
+        this.persoC.setVisible(true)
+        this.perso.setVisible(false)
+        this.persoC.play("crouch")
+        this.crouch = true;
+    }
     crouchF(){
 
 
 console.log(this.persoC.anims.key === "crouch" )
 
         if (this.crouch === true ){
-
-            this.crouch = false;
-            this.hide = false;
-            this.perso.x = this.persoC.x
-            this.perso.y = this.persoC.y-15
-            this.perso.enableBody()
-            this.persoC.disableBody()
-            this.cameras.main.startFollow(this.perso,true)
-            this.persoC.setVisible(false)
-            this.perso.setVisible(true)
-
+            this.crouchR()
         }
         else {
-
-
-            this.persoC.x = this.perso.x
-            this.persoC.y = this.perso.y+15
-            this.perso.disableBody()
-            this.persoC.enableBody()
-            this.cameras.main.startFollow(this.persoC,true  )
-            this.persoC.setVisible(true)
-            this.perso.setVisible(false)
-            this.persoC.play("crouch")
-            this.crouch = true;
-
-
-
+            this.crouchD()
         }
     }
     update() {
@@ -475,14 +489,13 @@ console.log(this.persoC.anims.key === "crouch" )
         }
 
         this.ai2.detectionBox.x = 100;
-        this.ai.IaGesttion(this.ai.ai,this.spawn1X,this.spawn1Y,this.ai.detectionBox);
-        this.ai.IaGesttion(this.ai2.ai,this.spawn2X,this.spawn2Y,this.ai2.detectionBox)
-        this.ai.IaGesttion(this.ai3.ai,this.spawn3X,this.spawn3Y,this.ai3.detectionBox)
-        this.ai.followBox(this.ai.ai,this.ai.detectionBox);
-        this.ai.followBox(this.ai2.ai,this.ai2.detectionBox);
-        this.ai.followBox(this.ai3.ai,this.ai3.detectionBox);
+        this.ai.IaGesttion(this.ai.ai,this.spawn1X,this.spawn1Y,this.ai.detectionBox,this.ai.detection);
+        this.ai.IaGesttion(this.ai2.ai,this.spawn2X,this.spawn2Y,this.ai2.detectionBox,this.ai2.detection)
+        this.ai.IaGesttion(this.ai3.ai,this.spawn3X,this.spawn3Y,this.ai3.detectionBox,this.ai3.detection)
+        this.ai.followBox(this.ai.ai,this.ai.detectionBox,this.ai.detection);
+        this.ai.followBox(this.ai2.ai,this.ai2.detectionBox,this.ai2.detection);
+        this.ai.followBox(this.ai3.ai,this.ai3.detectionBox,this.ai3.detection);
         this.cameraZoom()
-
         if (this.physics.overlap(this.demi,this.perso)){
             this.persoC.x = this.perso.x
             this.persoC.y = this.perso.y+15
@@ -513,22 +526,30 @@ console.log(this.persoC.anims.key === "crouch" )
                     me.shiftDown=false;
 
                     break;
+                case Phaser.Input.Keyboard.KeyCodes.Z:
+                    me.kan = false
+
+                    break;
 
                 case Phaser.Input.Keyboard.KeyCodes.Q:
+                    me.start = true
                     me.perso.play('idle')
                     me.leftDown=false;
                     if(me.crouch === true){
                         me.persoC.setVelocityX(0);
                     }
                     me.perso.setVelocityX(0);
+
                     break;
                 case Phaser.Input.Keyboard.KeyCodes.D:
+                    me.start = true
                     me.perso.play('idle')
                     me.rightDown=false;
                     if(me.crouch === true){
                         me.persoC.setVelocityX(0);
                     }
                     me.perso.setVelocityX(0);
+
                     break;
             }
         })
@@ -538,8 +559,6 @@ console.log(this.persoC.anims.key === "crouch" )
                 case Phaser.Input.Keyboard.KeyCodes.Q:
                     me.perso.play('run',true)
                     me.leftDown=true;
-
-
 
 
                     if(me.crouch === true){
@@ -554,9 +573,24 @@ console.log(this.persoC.anims.key === "crouch" )
                     me.perso.setVelocityX(me.PersoVX * -1);
 
 
+                    if (me.start === true ){
+                        me.smoke.createEmitter({
+                            speed:25,
+                            gravityY:-25,
+                            lifespan:500,
+                            scale:{start:.5, end:0.1, min:.1, max:.5},
+                            follow:{x:me.perso.x+45, y:me.perso.y+60},
+                            maxParticles:10,
+                            angle:{max:360, min:250}
+                        })
+                        me.start = false;
+                    }
+
+
                     break;
 
                 case Phaser.Input.Keyboard.KeyCodes.D:
+
                     me.perso.play('run',true)
                     me.rightDown=true;
                     if(me.crouch === true){
@@ -569,10 +603,25 @@ console.log(this.persoC.anims.key === "crouch" )
                     }
                         me.perso.setVelocityX(me.PersoVX);
 
+                    if (me.start === true ){
+                        me.smoke.createEmitter({
+                            speed:25,
+                            gravityY:-25,
+                            lifespan:1000,
+                            scale:{start:0.5, end:0.1, min:.1, max:.5},
+                            follow:{x:me.perso.x, y:me.perso.y+60},
+                            maxParticles:10,
+                            angle:{max:250, min:180},
+
+                        })
+                        me.start = false;
+                    }
+
+
                     break;
 
 
-                case Phaser.Input.Keyboard.KeyCodes.C:
+                case Phaser.Input.Keyboard.KeyCodes.S:
 
                   me.crouchF();
 
@@ -580,11 +629,35 @@ console.log(this.persoC.anims.key === "crouch" )
 
 
 
-                case Phaser.Input.Keyboard.KeyCodes.SPACE:
-
-                    if (me.perso.body.onFloor(true)){
-                        me.perso.setVelocityY(-450)
+                case Phaser.Input.Keyboard.KeyCodes.Z:
+                    if (me.crouch === true){
+                        me.crouchR()
+                        me.perso.setVelocityY(-550)
                     }
+                    else{
+                        if (me.perso.body.onFloor(true)){
+                            if (me.kan === false){
+                                me.smoke.createEmitter({
+                                    speed:25,
+                                    gravityY:-25,
+                                    lifespan:1000,
+                                    scale:{start:0.2, end:0.1, min:.1, max:.5},
+                                    follow:{x:me.perso.x+30, y:me.perso.y+60},
+                                    maxParticles:10,
+                                    angle:{max:180, min:360},
+
+                                })
+                                me.perso.setVelocityY(-550)
+                                me.kan = true
+
+                            }
+                            else{
+                                console.log("tesyt")
+                            }
+
+                        }
+                    }
+
                     break;
                 case Phaser.Input.Keyboard.KeyCodes.SHIFT:
                     me.shiftDown=true;

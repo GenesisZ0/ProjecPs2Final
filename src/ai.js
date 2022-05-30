@@ -14,6 +14,12 @@ class ai {
         this.detectionBox.setVisible(true);
         this.detectionBox.setDisplaySize(500,200);
 
+        this.detection = this.scene.physics.add.sprite(900, 100, 'detec').setOrigin(0, 0);
+        this.detection.body.setAllowGravity(false);
+        this.detection.setDisplaySize(46,46)
+        this.detection.setVisible(false);
+
+
         this.stop = this.ai.x
 
         this.scene.physics.add.collider(this.ai, this.scene.platforms2);
@@ -40,7 +46,7 @@ class ai {
 
 
 
-    IaGesttion(ai,spawnX,spawnY,detectionBox) {
+    IaGesttion(ai,spawnX,spawnY,detectionBox,detection) {
         this.dist = Phaser.Math.Distance.BetweenPoints(this.scene.perso, this.scene.ai.ai);
 
         this.gauche = false;
@@ -53,20 +59,21 @@ class ai {
                 this.scene.time.addEvent({
                     delay: 500,
                     callback: ()=>{
-                        this.iaDetection(ai)
+                        this.iaDetection(ai,detection)
                     },
                 })
 
             }
             else {
                this.iaPatterne(ai,spawnX,spawnY)
-
+                detection.setVisible(false);
             }
         } else {
             if (ai.x === spawnX) {
 
             } else {
                 this.iaPatterne(ai,spawnX,spawnY)
+                detection.setVisible(false);
             }
 
         }
@@ -75,6 +82,7 @@ class ai {
     }
 
     iaPatterne(ai,spawnX,spawnY){
+
     if ( Math.round(ai.x) === spawnX) {
 
         this.spot = true;
@@ -100,6 +108,8 @@ class ai {
 
 
         } else if ( ai.x >= spawnX + 50) {
+
+
             this.scene.physics.moveTo( ai, spawnX - 20, spawnY, 50);
             this.spot = true
 
@@ -110,7 +120,8 @@ class ai {
 
     }
 }
-    iaDetection(ai) {
+    iaDetection(ai,detection) {
+        detection.setVisible(true);
         this.currentPlayer = this.scene.perso.x
         this.scene.time.addEvent({delay: 1000});
 
@@ -144,7 +155,10 @@ class ai {
             ai.setVelocityY(-100);
         }
     }
-    followBox(ai,detectionBox){
+    followBox(ai,detectionBox,detection){
+
+        detection.x = ai.x+10
+        detection.y = ai.y-46
         if(ai.body.velocity.x < 0){
 
             detectionBox.x = ai.x -470;
