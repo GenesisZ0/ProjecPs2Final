@@ -2,6 +2,7 @@ class Tableau1 extends Phaser.Scene {
 
 
     preload() {
+        this.load.image('bg2', 'assets/bg2.png');
         this.load.image('smoke', 'assets/smoke.png')
 
         // Je preload les images autres que Tiled
@@ -85,11 +86,13 @@ class Tableau1 extends Phaser.Scene {
 
         // Création du personnage de base
 
-        this.bg1 = this.add.sprite(6240, 1500, 'bg1').setOrigin(0, 0);///144   110
+        this.bg1 = this.add.sprite(6260, 1480, 'bg1').setOrigin(0, 0);///144   110
+        this.bg2 = this.add.sprite(6260 +1250, 1480, 'bg2').setOrigin(0, 0);///144   110
+        this.bg2.setDisplaySize(20000,200000)
 
 
 
-        this.perso = this.physics.add.sprite(6440, 1950, 'idle1').setOrigin(0, 0);///144   110
+        this.perso = this.physics.add.sprite(6440, 190, 'idle1').setOrigin(0, 0);///144   110
         this.perso.setDisplaySize(52, 68);
         this.perso.body.setAllowGravity(true);
         this.perso.setVisible(true);
