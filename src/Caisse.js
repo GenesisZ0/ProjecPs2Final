@@ -3,14 +3,17 @@ class Caisse {
         let me = this;
 
         this.scene = Tableau1
-        this.caisse = this.scene.physics.add.sprite(12384, 1728, 'Arme1').setOrigin(0, 0);
-        this.caisse.setDisplaySize(100, 100);
+        this.caisse = this.scene.physics.add.sprite(12384, 1728, 'caisse').setOrigin(0, 0);
         this.caisse.body.setAllowGravity(false);
         this.caisse.setVisible(true);
-        this.caisse.setBodySize(1000, 500)
+        this.caisse.setImmovable(true)
+        this.caisse.setBodySize(76, 76)
 
 
+
+        this.scene.physics.add.collider(this.caisse,this.scene.perso)
         this.scene.physics.add.overlap(this.caisse, this.scene.ai2.ai, function () {
+            console.log("test")
             me.scene.ai2.ai.disableBody();
             me.scene.ai2.ai.setVisible(false);
             me.scene.ai2.detectionBox.setVisible(false);

@@ -11,11 +11,14 @@ class Tableau1 extends Phaser.Scene {
         this.load.image('circleB', 'assets/circleB.png');
 
         this.load.image('sword', 'assets/sword.png');
+        this.load.image('caisse', 'assets/caisse.png');
 
         this.load.image('grenouille', 'assets/vf2.png');
 
         this.load.image('Arme1', 'assets/square.png');
         this.load.image('Arme2', 'assets/squareY.png');
+
+
 
         // chargement tilemap
         this.load.image("tilemap", "assets/tiles_packed.png");
@@ -23,6 +26,7 @@ class Tableau1 extends Phaser.Scene {
         this.load.image("tilemap2", "assets/tilesets/background.jpg");
         this.load.image("demi",'assets/demi.png');
         this.load.image("laser",'assets/laser.png');
+        this.load.image("herbeA",'assets/herbeA/herbe1.png');
 
 
         // chargement de la map en json
@@ -45,7 +49,6 @@ class Tableau1 extends Phaser.Scene {
     }
 
     create() {
-
 
 
         this.smoke = this.add.particles('smoke')
@@ -88,11 +91,16 @@ class Tableau1 extends Phaser.Scene {
 
         this.bg1 = this.add.sprite(6260, 1480, 'bg1').setOrigin(0, 0);///144   110
         this.bg2 = this.add.sprite(6260 +1250, 1480, 'bg2').setOrigin(0, 0);///144   110
-        this.bg2.setDisplaySize(20000,200000)
+        this.bg3 = this.add.sprite(144 , 1480, 'bg2').setOrigin(0,0)
+        this.bg2.setDisplaySize(20000,20000)
+        this.bg1.setDepth(-1)
+        this.bg2.setDepth(-1)
+        this.bg3.setDepth(-1)
 
 
 
-        this.perso = this.physics.add.sprite(6440, 190, 'idle1').setOrigin(0, 0);///144   110
+
+        this.perso = this.physics.add.sprite(144, 110, 'idle1').setOrigin(0, 0);///144   110;;;; 19440      1590
         this.perso.setDisplaySize(52, 68);
         this.perso.body.setAllowGravity(true);
         this.perso.setVisible(true);
@@ -148,6 +156,19 @@ class Tableau1 extends Phaser.Scene {
             tileset2
         );
 
+        this.herbeA = this.add.sprite(0, 0, 'herbeA').setOrigin(0, 0);
+        //animation de 3 images
+        this.anims.create({
+            key: 'herbeA',
+            frames: [
+                {key: 'herbe1'},
+                {key: 'herbe3'},
+                {key: 'herbe3'},
+            ],
+            frameRate: 4,
+            repeat: -1
+        });
+
         // chargement du calque plateformes
         this.HauteHerbe = this.physics.add.group({
             allowGravity: false,
@@ -156,7 +177,6 @@ class Tableau1 extends Phaser.Scene {
         map.getObjectLayer('hauteHerbe').objects.forEach((HauteHerbe) => {
             // Add new spikes to our sprite group
             const HauteHerbeSprite = this.HauteHerbe.create(HauteHerbe.x, HauteHerbe.y - HauteHerbe.height, 'HauteHerbe').setOrigin(0);
-
         });
 
 
@@ -216,6 +236,17 @@ class Tableau1 extends Phaser.Scene {
                     this.ai3.ai.y = y -76
                     break;
 
+
+                }
+                case 'Spawn4': {
+                    this.ai4 = new ai(this)
+                    this.ai4.ai.x = x
+                    this.ai4.ai.y = y -76
+                    this.ai4.ai.body.setAllowGravity(false)
+
+                    break;
+
+
                 }
             }
         })
@@ -251,6 +282,9 @@ class Tableau1 extends Phaser.Scene {
 
 
         this.caisse = new Caisse(this)
+        this.caisse2 = new Caisse(this)
+        this.caisse2.caisse.x = 21600
+        this.caisse2.caisse.y = 1728 - 76
 
 
         this.physics.add.overlap(this.perso, this.caisse.caisse)
@@ -271,6 +305,8 @@ class Tableau1 extends Phaser.Scene {
         this.spawn2Y = this.ai2.ai.y
         this.spawn3X = this.ai3.ai.x
         this.spawn3Y = this.ai3.ai.y
+        this.spawn4X = this.ai4.ai.x
+        this.spawn4Y = this.ai4.ai.y
 
 
 
@@ -329,9 +365,12 @@ class Tableau1 extends Phaser.Scene {
 
 
 
-        this.cameras.main.startFollow(this.perso,true)
-    }
 
+        this.cameras.main.startFollow(this.perso,true)
+
+
+
+    }
 
 
 
@@ -495,9 +534,11 @@ console.log(this.persoC.anims.key === "crouch" )
         this.ai.IaGesttion(this.ai.ai,this.spawn1X,this.spawn1Y,this.ai.detectionBox,this.ai.detection);
         this.ai.IaGesttion(this.ai2.ai,this.spawn2X,this.spawn2Y,this.ai2.detectionBox,this.ai2.detection)
         this.ai.IaGesttion(this.ai3.ai,this.spawn3X,this.spawn3Y,this.ai3.detectionBox,this.ai3.detection)
+        this.ai.IaGesttion(this.ai4.ai,this.spawn4X,this.spawn4Y,this.ai4.detectionBox,this.ai4.detection)
         this.ai.followBox(this.ai.ai,this.ai.detectionBox,this.ai.detection);
         this.ai.followBox(this.ai2.ai,this.ai2.detectionBox,this.ai2.detection);
         this.ai.followBox(this.ai3.ai,this.ai3.detectionBox,this.ai3.detection);
+        this.ai.followBox(this.ai4.ai,this.ai4.detectionBox,this.ai4.detection);
         this.cameraZoom()
         if (this.physics.overlap(this.demi,this.perso)){
             this.persoC.x = this.perso.x
@@ -566,7 +607,7 @@ console.log(this.persoC.anims.key === "crouch" )
 
                     if(me.crouch === true){
                         me.persoC.setFlipX(true)
-                        me.persoC.setVelocityX(-100);
+                        me.persoC.setVelocityX(-150);
                     }
                     me.gauche = true;
                     if (me.gauche === true){
@@ -598,7 +639,7 @@ console.log(this.persoC.anims.key === "crouch" )
                     me.rightDown=true;
                     if(me.crouch === true){
                         me.persoC.setFlipX(false)
-                        me.persoC.setVelocityX(100);
+                        me.persoC.setVelocityX(150);
                     }
                         me.gauche = false;
                     if (me.gauche === false){

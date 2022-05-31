@@ -9,6 +9,7 @@ class ai {
         this.ai.setVisible(true);
 
 
+
         this.detectionBox = this.scene.physics.add.sprite(900, 100, 'laser').setOrigin(0, 0);
         this.detectionBox.body.setAllowGravity(false);
         this.detectionBox.setVisible(true);
