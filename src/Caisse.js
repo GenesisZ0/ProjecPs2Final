@@ -3,17 +3,19 @@ class Caisse {
         let me = this;
 
         this.scene = Tableau1
-        this.caisse = this.scene.physics.add.sprite(12384, 1728, 'caisse').setOrigin(0, 0);
+        this.caisse = this.scene.physics.add.sprite(12390, 1728+76, 'caisse').setOrigin(0, 0);
         this.caisse.body.setAllowGravity(false);
         this.caisse.setVisible(true);
         this.caisse.setImmovable(true)
-        this.caisse.setBodySize(76, 76)
+        this.caisse.setBodySize(72, 72)
 
 
 
         this.scene.physics.add.collider(this.caisse,this.scene.perso)
         this.scene.physics.add.overlap(this.caisse, this.scene.ai2.ai, function () {
             console.log("test")
+            me.scene.ai2.dead = true
+            me.scene.dist2 = 0;
             me.scene.ai2.ai.disableBody();
             me.scene.ai2.ai.setVisible(false);
             me.scene.ai2.detectionBox.setVisible(false);
@@ -35,6 +37,7 @@ class Caisse {
             })
 
 
+
             me.scene.sol2.setVisible(false)
             me.scene.sol1.setVisible(false)
             me.scene.sol3.setVisible(false)
@@ -45,6 +48,13 @@ class Caisse {
         })
 
 
+    }
+
+    coupe(){
+        let me =this;
+        if (me.scene.physics.overlap(me.scene.perso,me.caisse)){
+            me.caisse.body.setAllowGravity(true);
+        }
     }
 
 

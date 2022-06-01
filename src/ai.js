@@ -1,6 +1,8 @@
 class ai {
     constructor(Tableau1) {
         this.scene= Tableau1
+
+        this.dead = false;
         // Création du personnage de base
         this.ai = this.scene.physics.add.sprite(900, 225, 'volant1').setOrigin(0, 0);
         this.ai.setDisplaySize(64, 64);
@@ -43,11 +45,13 @@ class ai {
 
         this.ai.play('volant')
 
+
+
     }
 
 
 
-    IaGesttion(ai,spawnX,spawnY,detectionBox,detection) {
+    IaGesttion(ai,spawnX,spawnY,detectionBox,detection,dist) {
         this.dist = Phaser.Math.Distance.BetweenPoints(this.scene.perso, this.scene.ai.ai);
 
         this.gauche = false;
@@ -55,12 +59,12 @@ class ai {
         if (!this.scene.hide) {
 
 
-            if (this.scene.physics.overlap(this.scene.perso || this.scene.persoC,detectionBox )) {
+            if (this.scene.physics.overlap(this.scene.persoC,detectionBox ) || this.scene.physics.overlap(this.scene.perso,detectionBox ) ) {
 
                 this.scene.time.addEvent({
                     delay: 500,
                     callback: ()=>{
-                        this.iaDetection(ai,detection)
+                        this.iaDetection(ai,detection,dist)
                     },
                 })
 
@@ -121,14 +125,14 @@ class ai {
 
     }
 }
-    iaDetection(ai,detection) {
+    iaDetection(ai,detection,dist) {
         detection.setVisible(true);
         this.currentPlayer = this.scene.perso.x
         this.scene.time.addEvent({delay: 1000});
 
-        if (this.dist <= 100) {
+        if (dist <= 200 && this.dead ===false) {
             console.log("efnkldnlnl")
-            this.attackAi(ai)
+            this.scene.respawn();
         }
         if (this.scene.perso.x <= ai.x) {
             ai.setVelocityX(-550)
