@@ -914,7 +914,7 @@ console.log(this.persoC.anims.key === "crouch" )
                     break;
 
 
-                case Phaser.Input.Keyboard.KeyCodes.S:
+                case Phaser.Input.Keyboard.KeyCodes.C:
 
 
                   me.crouchF();
