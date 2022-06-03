@@ -113,7 +113,7 @@ class Tableau1 extends Phaser.Scene {
         this.machine.body.setAllowGravity(false)
         this.machine.setImmovable(true)
 
-        this.perso = this.physics.add.sprite(5616, 110, 'idle1').setOrigin(0, 0);///144   110;;;; 19440      25200   410
+        this.perso = this.physics.add.sprite(144, 110, 'idle1').setOrigin(0, 0);///144   110;;;; 19440      25200   410
         this.perso.setDisplaySize(52, 68);
         this.perso.body.setAllowGravity(true);
         this.perso.setVisible(true);
