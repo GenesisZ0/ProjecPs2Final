@@ -4,6 +4,7 @@ class Tableau1 extends Phaser.Scene {
         super("mainGame");
     }
 
+
     preload() {
         this.load.image('bg2', 'assets/bg2.png');
         this.load.image('smoke', 'assets/smoke.png')
@@ -874,6 +875,7 @@ console.log(this.persoC.anims.key === "crouch" )
 
                 case Phaser.Input.Keyboard.KeyCodes.S:
 
+
                   me.crouchF();
 
                 break;
@@ -926,6 +928,7 @@ console.log(this.persoC.anims.key === "crouch" )
                     me.caisse4.coupe(me.caisse4.caisseC)
                     if (me.physics.overlap(me.machine,me.perso) && me.destroy ===0 ){
                         console.log(me.destroy)
+                        me.scene.start("credits")
                     }
 
                     break;

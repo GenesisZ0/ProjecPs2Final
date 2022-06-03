@@ -37,8 +37,8 @@ class Intro extends Phaser.Scene{
         this.part = this.add.particles('particles');
 
         this.emitter = this.part.createEmitter({
-            x: { min: -800, max: 1000 },
-            y: { min: 800, max: 800 },
+            x: { min: -800, max: 1920 },
+            y: { min: 1060, max: 1060 },
             lifespan: { min: 500, max: 4000},
             speedY: { min: -50, max: -10 },
             scale: { start: 0.1, end: 0 },
@@ -48,20 +48,8 @@ class Intro extends Phaser.Scene{
         });
         this.emitter.start(0,0);
 
-        this.particles2 = this.add.particles('particles2');
 
-        this.particles2.createEmitter({
-            // frame: 'particles',
-            radial: false,
-            x: 400,
-            y: { start: 0, end: 560, steps: 256 },
-            lifespan: 1000,
-            speedX: { min: 200, max: 400 },
-            quantity: 2,
-            gravityY: 200,
-            scale: { start: 0.4, end: 0},
-            blendMode: 'ADD'
-        });
+
 
 
     }
