@@ -1,5 +1,8 @@
 class Tableau1 extends Phaser.Scene {
 
+    constructor() {
+        super("mainGame");
+    }
 
     preload() {
         this.load.image('bg2', 'assets/bg2.png');
@@ -27,7 +30,7 @@ class Tableau1 extends Phaser.Scene {
         this.load.image("demi",'assets/demi.png');
         this.load.image("laser",'assets/laser.png');
         this.load.image("herbeA",'assets/herbeA/herbe1.png');
-
+        this.load.image("basse","assets/basse.png");
 
         // chargement de la map en json
         this.load.tilemapTiledJSON("map", "assets/MapBasique.json");
@@ -41,6 +44,9 @@ class Tableau1 extends Phaser.Scene {
         this.loadFrames("crouch",3,"assets/crouch/crouch")
         this.loadFrames("volant",6,"assets/Ai/volant")
         this.loadFrames("machine", 3,"assets/machine/machine")
+        this.loadFrames("dash", 4,"assets/tuto/dash/dash")
+        this.loadFrames("jump", 2,"assets/tuto/jump/jump")
+        this.loadFrames("c", 2,"assets/tuto/c/c")
 
     }
 
@@ -71,6 +77,7 @@ class Tableau1 extends Phaser.Scene {
         this.PersoVX = 520;
         this.start = true;
         this.kan = false
+        this.destroy = 2
 
 
         this.speed = {
@@ -92,9 +99,9 @@ class Tableau1 extends Phaser.Scene {
         // Création du personnage de base
 
         this.bg1 = this.add.sprite(6260, 1480, 'bg1').setOrigin(0, 0);///144   110
-        this.bg2 = this.add.sprite(6260 +1250, 1480, 'bg2').setOrigin(0, 0);///144   110
+        this.bg2 = this.add.sprite(6260 +1250, 0, 'bg2').setOrigin(0, 0);///144   110
         this.bg3 = this.add.sprite(144 , 1480, 'bg2').setOrigin(0,0)
-        this.bg2.setDisplaySize(20000,20000)
+        this.bg2.setDisplaySize(60000,9000)
         this.bg1.setDepth(-1)
         this.bg2.setDepth(-1)
         this.bg3.setDepth(-1)
@@ -105,7 +112,7 @@ class Tableau1 extends Phaser.Scene {
         this.machine.body.setAllowGravity(false)
         this.machine.setImmovable(true)
 
-        this.perso = this.physics.add.sprite(25200, 410, 'idle1').setOrigin(0, 0);///144   110;;;; 19440      25200   410
+        this.perso = this.physics.add.sprite(5616, 110, 'idle1').setOrigin(0, 0);///144   110;;;; 19440      25200   410
         this.perso.setDisplaySize(52, 68);
         this.perso.body.setAllowGravity(true);
         this.perso.setVisible(true);
@@ -257,6 +264,17 @@ class Tableau1 extends Phaser.Scene {
 
 
                 }
+                case 'Spawn6': {
+                    this.ai6= new ai(this)
+                    this.ai6.ai.x = x
+                    this.ai6.ai.y = y -76
+                    this.ai6.ai.body.setAllowGravity(false)
+
+
+                    break;
+
+
+                }
             }
         })
 
@@ -302,6 +320,50 @@ class Tableau1 extends Phaser.Scene {
         this.caisse4.caisse.y = 864 - 76
 
 
+
+
+
+
+        this.basse = new basse(this)
+        this.basse2 = new basse(this)
+        this.basse2.basse.x = 30816
+        this.basse2.basse.y = 1224 -72
+
+        this.physics.add.collider(this.caisse3.caisse, this.basse.basse, function () {
+            me.cameras.main.shake(1500,0.004);
+            me.basse.basse.disableBody()
+            me.basse.basse.setVisible(false);
+            me.destroy = me.destroy - 1
+            me.smoke.createEmitter({
+                speed:200,
+                gravityY:-350,
+                lifespan:3000,
+                scale:{start:1, end:0.1, min:.1, max:.5},
+                follow:{x:me.basse.x, y:me.basse.y},
+                maxParticles:20,
+                angle:{max:180, min:360},
+            })
+
+        })
+
+        this.physics.add.collider(this.caisse4.caisse, this.basse2.basse, function () {
+            me.cameras.main.shake(1500,0.004);
+            me.basse2.basse.disableBody()
+            me.destroy = me.destroy - 1
+            me.basse2.basse.setVisible(false);
+            me.smoke.createEmitter({
+                speed:200,
+                gravityY:-350,
+                lifespan:3000,
+                scale:{start:1, end:0.1, min:.1, max:.5},
+                follow:{x:me.basse2.basse.x, y:me.basse2.basse.y},
+                maxParticles:20,
+                angle:{max:180, min:360},
+            })
+
+        })
+
+
         this.physics.add.overlap(this.perso, this.caisse.caisse)
         this.physics.add.collider(this.caisse.caisse, this.platforms2);
         this.physics.add.collider(this.caisse2.caisse, this.platforms2);
@@ -327,6 +389,8 @@ class Tableau1 extends Phaser.Scene {
         this.spawn4Y = this.ai4.ai.y
         this.spawn5X = this.ai5.ai.x
         this.spawn5Y = this.ai5.ai.y
+        this.spawn6X = this.ai6.ai.x
+        this.spawn6Y = this.ai6.ai.y
 
         this.distPatterne = 50
         this.distPatterne5 = 500
@@ -385,6 +449,47 @@ class Tableau1 extends Phaser.Scene {
             repeat: -1
         });
 
+        this.DashTuto = this.add.sprite(11520-100, 1872 - 300, 'dash').setOrigin(0, 0);
+        //animation de 3 images
+        this.anims.create({
+            key: 'dash',
+            frames: [
+                {key: 'dash1'},
+                {key: 'dash2'},
+                {key: 'dash3'},
+                {key: 'dash4'},
+            ],
+            frameRate: 3,
+            repeat: -1
+        });
+
+        this.JumpTuto = this.add.sprite(144-150, 144 - 190, 'jump').setOrigin(0, 0);
+        //animation de 3 images
+        this.anims.create({
+            key: 'jump',
+            frames: [
+                {key: 'jump1'},
+                {key: 'jump2'},
+            ],
+            frameRate: 3,
+            repeat: -1
+        });
+
+        this.CTuto = this.add.sprite(5616 -200, 2016 - 300, 'c').setOrigin(0, 0);
+        //animation de 3 images
+        this.anims.create({
+            key: 'c',
+            frames: [
+                {key: 'c1'},
+                {key: 'c2'},
+            ],
+            frameRate: 3,
+            repeat: -1
+        });
+
+        this.CTuto.play('c')
+        this.JumpTuto.play('jump')
+        this.DashTuto.play('dash')
 
         //animation de 3 images
         this.anims.create({
@@ -397,6 +502,7 @@ class Tableau1 extends Phaser.Scene {
             frameRate: 4,
             repeat: -1
         });
+
 
         this.machine.play('machine')
 
@@ -564,6 +670,7 @@ console.log(this.persoC.anims.key === "crouch" )
         this.dist3 = Phaser.Math.Distance.BetweenPoints(this.perso, this.ai3.ai);
         this.dist4 = Phaser.Math.Distance.BetweenPoints(this.perso, this.ai4.ai);
         this.dist5 = Phaser.Math.Distance.BetweenPoints(this.perso, this.ai5.ai);
+        this.dist6 = Phaser.Math.Distance.BetweenPoints(this.perso, this.ai5.ai);
        if (this.ai2.dead === false){
            this.dist2 = Phaser.Math.Distance.BetweenPoints(this.perso, this.ai2.ai);
        }
@@ -623,11 +730,13 @@ console.log(this.persoC.anims.key === "crouch" )
         this.ai.IaGesttion(this.ai3.ai,this.spawn3X,this.spawn3Y,this.ai3.detectionBox,this.ai3.detection,this.dist3,this.distPatterne)
         this.ai.IaGesttion(this.ai4.ai,this.spawn4X,this.spawn4Y,this.ai4.detectionBox,this.ai4.detection,this.dist4,this.distPatterne)
         this.ai.IaGesttion(this.ai5.ai,this.spawn5X,this.spawn5Y,this.ai5.detectionBox,this.ai5.detection,this.dist5,this.distPatterne5)
+        this.ai.IaGesttion(this.ai6.ai,this.spawn6X,this.spawn6Y,this.ai6.detectionBox,this.ai6.detection,this.dist6,this.distPatterne)
         this.ai.followBox(this.ai.ai,this.ai.detectionBox,this.ai.detection);
         this.ai.followBox(this.ai2.ai,this.ai2.detectionBox,this.ai2.detection);
         this.ai.followBox(this.ai3.ai,this.ai3.detectionBox,this.ai3.detection);
         this.ai.followBox(this.ai4.ai,this.ai4.detectionBox,this.ai4.detection);
         this.ai.followBox(this.ai5.ai,this.ai5.detectionBox,this.ai5.detection);
+        this.ai.followBox(this.ai6.ai,this.ai6.detectionBox,this.ai6.detection);
         this.cameraZoom()
         if (this.physics.overlap(this.demi,this.perso)){
             this.persoC.x = this.perso.x
@@ -667,8 +776,9 @@ console.log(this.persoC.anims.key === "crouch" )
                     me.shiftDown=false;
 
                     break;
-                case Phaser.Input.Keyboard.KeyCodes.Z:
+                case Phaser.Input.Keyboard.KeyCodes.SPACE:
                     me.kan = false
+                    me.shiftDown=false;
 
                     break;
 
@@ -770,7 +880,7 @@ console.log(this.persoC.anims.key === "crouch" )
 
 
 
-                case Phaser.Input.Keyboard.KeyCodes.Z:
+                case Phaser.Input.Keyboard.KeyCodes.SPACE:
                     if (me.crouch === true){
                         me.crouchR()
                         me.perso.setVelocityY(-550)
@@ -799,6 +909,11 @@ console.log(this.persoC.anims.key === "crouch" )
                         }
                     }
 
+                    if(!me.perso.body.onFloor()){
+                        me.shiftDown=true;
+                    }
+
+
                     break;
                 case Phaser.Input.Keyboard.KeyCodes.SHIFT:
                     me.shiftDown=true;
@@ -809,6 +924,9 @@ console.log(this.persoC.anims.key === "crouch" )
                     me.caisse2.coupe(me.caisse2.caisseC)
                     me.caisse3.coupe(me.caisse3.caisseC)
                     me.caisse4.coupe(me.caisse4.caisseC)
+                    if (me.physics.overlap(me.machine,me.perso) && me.destroy ===0 ){
+                        console.log(me.destroy)
+                    }
 
                     break;
 

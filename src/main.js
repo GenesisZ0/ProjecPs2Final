@@ -8,12 +8,12 @@ let gameConfig = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug : true,
+            debug : false,
             gravity: { y: 2000},
             fps : 120
 
         }
     },
-    scene: new Tableau1()
+    scene: [Intro,new Tableau1()]
 };
 let game = new Phaser.Game(gameConfig);

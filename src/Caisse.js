@@ -43,7 +43,6 @@ class Caisse {
             })
 
 
-
             me.scene.sol2.setVisible(false)
             me.scene.sol1.setVisible(false)
             me.scene.sol3.setVisible(false)
