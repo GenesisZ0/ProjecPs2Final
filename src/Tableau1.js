@@ -48,6 +48,9 @@ class Tableau1 extends Phaser.Scene {
         this.loadFrames("dash", 4,"assets/tuto/dash/dash")
         this.loadFrames("jump", 2,"assets/tuto/jump/jump")
         this.loadFrames("c", 2,"assets/tuto/c/c")
+        this.loadFrames("e", 2,"assets/tuto/e/e")
+        this.loadFrames("machin", 3,"assets/machin/machin")
+
 
     }
 
@@ -112,6 +115,11 @@ class Tableau1 extends Phaser.Scene {
         this.machine.setDisplaySize(288,288)
         this.machine.body.setAllowGravity(false)
         this.machine.setImmovable(true)
+
+        this.machin = this.physics.add.sprite(27864, 1656 - 288, 'machin1').setOrigin(0, 0)
+        this.machin.setDisplaySize(288,288)
+        this.machin.body.setAllowGravity(false)
+        this.machin.setImmovable(true)
 
         this.perso = this.physics.add.sprite(144, 110, 'idle1').setOrigin(0, 0);///144   110;;;; 19440      25200   410
         this.perso.setDisplaySize(52, 68);
@@ -335,6 +343,9 @@ class Tableau1 extends Phaser.Scene {
             me.basse.basse.disableBody()
             me.basse.basse.setVisible(false);
             me.destroy = me.destroy - 1
+            if (me.scene.destroy === 0){
+            me.machin.setVisible(false)
+            }
             me.smoke.createEmitter({
                 speed:200,
                 gravityY:-350,
@@ -487,7 +498,19 @@ class Tableau1 extends Phaser.Scene {
             frameRate: 3,
             repeat: -1
         });
+        this.ETuto = this.add.sprite(12312-150, 1872 -300, 'e').setOrigin(0, 0);
+        //animation de 3 images
+        this.anims.create({
+            key: 'e',
+            frames: [
+                {key: 'e1'},
+                {key: 'e2'},
+            ],
+            frameRate: 3,
+            repeat: -1
+        });
 
+        this.ETuto.play("e")
         this.CTuto.play('c')
         this.JumpTuto.play('jump')
         this.DashTuto.play('dash')
@@ -506,6 +529,20 @@ class Tableau1 extends Phaser.Scene {
 
 
         this.machine.play('machine')
+
+        this.anims.create({
+            key: 'machin',
+            frames: [
+                {key: 'machin1'},
+                {key: 'machin2'},
+                {key: 'machin3'},
+            ],
+            frameRate: 2,
+            repeat: -1
+        });
+
+
+        this.machin.play('machin')
 
         this.checkpoint=this.physics.add.group({
             allowGravity: false,
@@ -537,7 +574,8 @@ class Tableau1 extends Phaser.Scene {
 
 
         this.cameras.main.startFollow(this.perso,true)
-
+        this.s = this.add.sprite(-25, -10, 'Arme1').setOrigin(0, 0)
+        this.s.setDisplaySize(72,72)
 
 
     }
@@ -681,6 +719,9 @@ console.log(this.persoC.anims.key === "crouch" )
 
 
 
+        if (this.destroy === 0){
+            this.machin.setVisible(false)
+        }
         this.test()
         this.cameraZoom()
 
