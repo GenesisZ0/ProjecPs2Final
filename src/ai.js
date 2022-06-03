@@ -24,6 +24,7 @@ class ai {
 
 
         this.stop = this.ai.x
+        this.distPaterne =50
 
         this.scene.physics.add.collider(this.ai, this.scene.platforms2);
 
@@ -51,7 +52,7 @@ class ai {
 
 
 
-    IaGesttion(ai,spawnX,spawnY,detectionBox,detection,dist) {
+    IaGesttion(ai,spawnX,spawnY,detectionBox,detection,dist,distPaterne) {
         this.dist = Phaser.Math.Distance.BetweenPoints(this.scene.perso, this.scene.ai.ai);
 
         this.gauche = false;
@@ -70,14 +71,14 @@ class ai {
 
             }
             else {
-               this.iaPatterne(ai,spawnX,spawnY)
+               this.iaPatterne(ai,spawnX,spawnY,distPaterne)
                 detection.setVisible(false);
             }
         } else {
             if (ai.x === spawnX) {
 
             } else {
-                this.iaPatterne(ai,spawnX,spawnY)
+                this.iaPatterne(ai,spawnX,spawnY,distPaterne)
                 detection.setVisible(false);
             }
 
@@ -86,14 +87,14 @@ class ai {
 
     }
 
-    iaPatterne(ai,spawnX,spawnY){
+    iaPatterne(ai,spawnX,spawnY,distPaterne){
 
     if ( Math.round(ai.x) === spawnX) {
 
         this.spot = true;
-        if ( ai.x >= spawnX - 10 && this.spot === true) {
+        if ( ai.x >= spawnX - distPaterne && this.spot === true) {
             this.scene.physics.moveTo( ai, spawnX + 20, spawnY, 50);
-        } else if (ai.x <= spawnX + 10 && this.spot === true) {
+        } else if (ai.x <= spawnX + distPaterne && this.spot === true) {
             this.scene.physics.moveTo( ai, spawnX - 20, spawnY, 50);
         } else {
             if (this.spot === false) {
@@ -112,14 +113,14 @@ class ai {
             }
 
 
-        } else if ( ai.x >= spawnX + 50) {
+        } else if ( ai.x >= spawnX + distPaterne) {
 
 
-            this.scene.physics.moveTo( ai, spawnX - 20, spawnY, 50);
+            this.scene.physics.moveTo( ai, spawnX - 50, spawnY, 50);
             this.spot = true
 
-        } else if ( ai.x <= spawnX - 50) {
-            this.scene.physics.moveTo( ai, spawnX + 20, spawnY, 50);
+        } else if ( ai.x <= spawnX - distPaterne) {
+            this.scene.physics.moveTo( ai, spawnX + 50, spawnY, 50);
             this.spot = true
         }
 
@@ -130,7 +131,7 @@ class ai {
         this.currentPlayer = this.scene.perso.x
         this.scene.time.addEvent({delay: 1000});
 
-        if (dist <= 200 && this.dead ===false) {
+        if (dist <= 150 && this.dead ===false) {
             console.log("efnkldnlnl")
             this.scene.respawn();
         }

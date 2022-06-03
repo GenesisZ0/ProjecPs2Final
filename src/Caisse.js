@@ -9,6 +9,12 @@ class Caisse {
         this.caisse.setImmovable(true)
         this.caisse.setBodySize(72, 72)
 
+        this.caisseC = this.scene.physics.add.sprite(12390, 1728+76, 'vide').setOrigin(0, 0);
+        this.caisseC.setBodySize(100, 100).setOffset(-30,-10)
+        this.caisseC.setVisible(true);
+        this.caisseC.setImmovable(true)
+        this.caisseC.body.setAllowGravity(false);
+
 
 
         this.scene.physics.add.collider(this.caisse,this.scene.perso)
@@ -50,9 +56,9 @@ class Caisse {
 
     }
 
-    coupe(){
+    coupe(caisseC,caisse){
         let me =this;
-        if (me.scene.physics.overlap(me.scene.perso,me.caisse)){
+        if (me.scene.physics.overlap(me.scene.perso,caisseC)){
             me.caisse.body.setAllowGravity(true);
         }
     }

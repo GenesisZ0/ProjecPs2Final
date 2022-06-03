@@ -10,10 +10,10 @@ class Tableau1 extends Phaser.Scene {
         this.load.image('circleG', 'assets/circleG.png');
         this.load.image('circleB', 'assets/circleB.png');
 
-        this.load.image('sword', 'assets/sword.png');
         this.load.image('caisse', 'assets/caisse.png');
 
         this.load.image('grenouille', 'assets/vf2.png');
+
 
         this.load.image('Arme1', 'assets/square.png');
         this.load.image('Arme2', 'assets/squareY.png');
@@ -40,6 +40,7 @@ class Tableau1 extends Phaser.Scene {
         this.loadFrames("run", 10,"assets/run/run")
         this.loadFrames("crouch",3,"assets/crouch/crouch")
         this.loadFrames("volant",6,"assets/Ai/volant")
+        this.loadFrames("machine", 3,"assets/machine/machine")
 
     }
 
@@ -99,9 +100,12 @@ class Tableau1 extends Phaser.Scene {
         this.bg3.setDepth(-1)
 
 
+        this.machine = this.physics.add.sprite(27864, 1656 - 288, 'machine1').setOrigin(0, 0)
+        this.machine.setDisplaySize(288,288)
+        this.machine.body.setAllowGravity(false)
+        this.machine.setImmovable(true)
 
-
-        this.perso = this.physics.add.sprite(10004, 110, 'idle1').setOrigin(0, 0);///144   110;;;; 19440      1590
+        this.perso = this.physics.add.sprite(25200, 410, 'idle1').setOrigin(0, 0);///144   110;;;; 19440      25200   410
         this.perso.setDisplaySize(52, 68);
         this.perso.body.setAllowGravity(true);
         this.perso.setVisible(true);
@@ -115,17 +119,12 @@ class Tableau1 extends Phaser.Scene {
         this.persoC.hp = 300;
 
 
-        this.sword = this.physics.add.sprite(200, 100, "sword").setScale(0.1, 0.1);
-        this.sword.body.setAllowGravity(false);
-        this.sword.setDepth(1);
-        this.sword.setVisible(false);
-        this.sword.attack = 100
-        this.sword.disableBody()
-
         this.demi = this.physics.add.sprite(5760, 2010, 'demi').setOrigin(0, 0)
         this.demi.setDisplaySize(500, 24);
         this.demi.body.setAllowGravity(false)
         this.demi.setImmovable(true)
+
+
 
         // chargement de la map
         const map = this.add.tilemap("map");
@@ -197,15 +196,13 @@ class Tableau1 extends Phaser.Scene {
         this.physics.add.collider(this.persoC, this.platforms2);
         this.physics.add.collider(this.perso, this.platforms2);
         this.physics.add.collider(this.perso, this.demi);
-        this.physics.add.collider(this.sword, this.perso);
+
+
 
 
         this.initKeyboard();
 
         this.physics.add.overlap(this.persoC, this.HauteHerbe)
-        this.physics.add.overlap(this.sword, this.perso, function () {
-            me.perso.hp -= me.sword.attack;
-        })
 
 
         this.projectiles = this.add.group();
@@ -249,6 +246,17 @@ class Tableau1 extends Phaser.Scene {
 
 
                 }
+                case 'Spawn5': {
+                    this.ai5 = new ai(this)
+                    this.ai5.ai.x = x
+                    this.ai5.ai.y = y -76
+                    this.ai5.ai.body.setAllowGravity(false)
+
+
+                    break;
+
+
+                }
             }
         })
 
@@ -284,13 +292,21 @@ class Tableau1 extends Phaser.Scene {
 
         this.caisse = new Caisse(this)
         this.caisse2 = new Caisse(this)
+        this.caisse3 = new Caisse(this)
+        this.caisse4 = new Caisse(this)
         this.caisse2.caisse.x = 21600
         this.caisse2.caisse.y = 1728 - 76
+        this.caisse3.caisse.x = 25344
+        this.caisse3.caisse.y = 504 - 76
+        this.caisse4.caisse.x = 30816
+        this.caisse4.caisse.y = 864 - 76
 
 
         this.physics.add.overlap(this.perso, this.caisse.caisse)
         this.physics.add.collider(this.caisse.caisse, this.platforms2);
         this.physics.add.collider(this.caisse2.caisse, this.platforms2);
+        this.physics.add.collider(this.caisse3.caisse, this.platforms2);
+        this.physics.add.collider(this.caisse4.caisse, this.platforms2);
         this.physics.add.collider(this.sol1, this.perso);
         this.physics.add.collider(this.sol2, this.perso);
         this.physics.add.collider(this.sol3, this.perso);
@@ -309,8 +325,11 @@ class Tableau1 extends Phaser.Scene {
         this.spawn3Y = this.ai3.ai.y
         this.spawn4X = this.ai4.ai.x
         this.spawn4Y = this.ai4.ai.y
+        this.spawn5X = this.ai5.ai.x
+        this.spawn5Y = this.ai5.ai.y
 
-
+        this.distPatterne = 50
+        this.distPatterne5 = 500
 
 
 
@@ -367,6 +386,20 @@ class Tableau1 extends Phaser.Scene {
         });
 
 
+        //animation de 3 images
+        this.anims.create({
+            key: 'machine',
+            frames: [
+                {key: 'machine1'},
+                {key: 'machine2'},
+                {key: 'machine3'},
+            ],
+            frameRate: 4,
+            repeat: -1
+        });
+
+        this.machine.play('machine')
+
         this.checkpoint=this.physics.add.group({
             allowGravity: false,
             immovable: true
@@ -377,8 +410,23 @@ class Tableau1 extends Phaser.Scene {
         this.physics.add.overlap(this.perso, this.checkpoint, function()
         {
             me.checkpointX = me.perso.x;
-            me.checkpointY = me.perso.y;
+            me.checkpointY = me.perso.y -50;
         });
+
+
+        this.deathzone=this.physics.add.group({
+            allowGravity: false,
+            immovable: true
+        });
+        map.getObjectLayer('deathzone').objects.forEach((point)=>{
+            this.deathzone_boup = this.deathzone.create(point.x, point.y, "vide").setOrigin(0).setDisplaySize(point.width, point.height);
+        });
+        this.physics.add.overlap(this.perso, this.deathzone, function()
+        {
+           me.respawn()
+        });
+
+
 
 
         this.cameras.main.startFollow(this.perso,true)
@@ -388,11 +436,17 @@ class Tableau1 extends Phaser.Scene {
     }
 
 
-    respawn()
-    {
+    respawn() {
 
         this.perso.setPosition(this.checkpointX,this.checkpointY);
         this.ai.ai.x = this.spawn1X;
+        this.ai2.ai.x = this.spawn2X;
+        this.ai3.ai.x = this.spawn3X;
+        this.ai4.ai.x = this.spawn4X;
+        this.ai.ai.y = this.spawn1Y;
+        this.ai2.ai.y = this.spawn2Y;
+        this.ai3.ai.y = this.spawn3Y;
+        this.ai4.ai.y = this.spawn4Y;
     }
 
     cameraZoom(){
@@ -509,6 +563,7 @@ console.log(this.persoC.anims.key === "crouch" )
         this.dist1 = Phaser.Math.Distance.BetweenPoints(this.perso, this.ai.ai);
         this.dist3 = Phaser.Math.Distance.BetweenPoints(this.perso, this.ai3.ai);
         this.dist4 = Phaser.Math.Distance.BetweenPoints(this.perso, this.ai4.ai);
+        this.dist5 = Phaser.Math.Distance.BetweenPoints(this.perso, this.ai5.ai);
        if (this.ai2.dead === false){
            this.dist2 = Phaser.Math.Distance.BetweenPoints(this.perso, this.ai2.ai);
        }
@@ -563,14 +618,16 @@ console.log(this.persoC.anims.key === "crouch" )
         }
 
         this.ai2.detectionBox.x = 100;
-        this.ai.IaGesttion(this.ai.ai,this.spawn1X,this.spawn1Y,this.ai.detectionBox,this.ai.detection,this.dist1);
-        this.ai.IaGesttion(this.ai2.ai,this.spawn2X,this.spawn2Y,this.ai2.detectionBox,this.ai2.detection,this.dist2)
-        this.ai.IaGesttion(this.ai3.ai,this.spawn3X,this.spawn3Y,this.ai3.detectionBox,this.ai3.detection,this.dist3)
-        this.ai.IaGesttion(this.ai4.ai,this.spawn4X,this.spawn4Y,this.ai4.detectionBox,this.ai4.detection,this.dist4)
+        this.ai.IaGesttion(this.ai.ai,this.spawn1X,this.spawn1Y,this.ai.detectionBox,this.ai.detection,this.dist1,this.distPatterne);
+        this.ai.IaGesttion(this.ai2.ai,this.spawn2X,this.spawn2Y,this.ai2.detectionBox,this.ai2.detection,this.dist2,this.distPatterne)
+        this.ai.IaGesttion(this.ai3.ai,this.spawn3X,this.spawn3Y,this.ai3.detectionBox,this.ai3.detection,this.dist3,this.distPatterne)
+        this.ai.IaGesttion(this.ai4.ai,this.spawn4X,this.spawn4Y,this.ai4.detectionBox,this.ai4.detection,this.dist4,this.distPatterne)
+        this.ai.IaGesttion(this.ai5.ai,this.spawn5X,this.spawn5Y,this.ai5.detectionBox,this.ai5.detection,this.dist5,this.distPatterne5)
         this.ai.followBox(this.ai.ai,this.ai.detectionBox,this.ai.detection);
         this.ai.followBox(this.ai2.ai,this.ai2.detectionBox,this.ai2.detection);
         this.ai.followBox(this.ai3.ai,this.ai3.detectionBox,this.ai3.detection);
         this.ai.followBox(this.ai4.ai,this.ai4.detectionBox,this.ai4.detection);
+        this.ai.followBox(this.ai5.ai,this.ai5.detectionBox,this.ai5.detection);
         this.cameraZoom()
         if (this.physics.overlap(this.demi,this.perso)){
             this.persoC.x = this.perso.x
@@ -585,7 +642,13 @@ console.log(this.persoC.anims.key === "crouch" )
         }
 
 
-
+        this.caisse2.caisseC.x = this.caisse2.caisse.x
+        this.caisse2.caisseC.y = this.caisse2.caisse.y
+        this.caisse3.caisseC.x = this.caisse3.caisse.x
+        this.caisse3.caisseC.y = this.caisse3.caisse.y
+        this.caisse4.caisseC.x = this.caisse4.caisse.x
+        this.caisse4.caisseC.y = this.caisse4.caisse.y
+        this.caisse3.caisseC.setOffset(0 ,0)
 
 
 
@@ -742,8 +805,10 @@ console.log(this.persoC.anims.key === "crouch" )
 
                     break;
                 case Phaser.Input.Keyboard.KeyCodes.E:
-                    me.caisse.coupe();
-                    me.caisse2.coupe()
+                    me.caisse.coupe(me.caisse.caisseC);
+                    me.caisse2.coupe(me.caisse2.caisseC)
+                    me.caisse3.coupe(me.caisse3.caisseC)
+                    me.caisse4.coupe(me.caisse4.caisseC)
 
                     break;
 
